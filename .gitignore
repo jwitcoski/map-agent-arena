@@ -1,0 +1,6 @@
+# Local API keys — never commit
+admin-boundaries/js/config.js
+.DS_Store
+Thumbs.db
+*.log
+node_modules/

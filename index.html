@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Map Agent Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #081018;
+      --ink: #eaf2f7;
+      --muted: #8aa0b4;
+      --line: rgba(180, 210, 230, 0.12);
+      --accent: #3ecfbf;
+      --pad: clamp(18px, 4vw, 40px);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Outfit, system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(800px 420px at 90% -10%, rgba(62, 207, 191, 0.14), transparent 55%),
+        linear-gradient(180deg, #0b1520, var(--bg));
+    }
+    main { max-width: 920px; padding: calc(var(--pad) + 12px) var(--pad) 48px; }
+    .kicker {
+      margin: 0 0 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    h1 {
+      margin: 0;
+      font-family: Sora, sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    .lede {
+      margin: 14px 0 28px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.5;
+      max-width: 38rem;
+    }
+    .grid { display: grid; gap: 14px; }
+    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
+    a.card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      background: rgba(12, 22, 32, 0.7);
+      transition: border-color .2s, transform .2s;
+    }
+    a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    a.card.span { grid-column: 1 / -1; }
+    .card h2 {
+      margin: 0 0 6px;
+      font-family: Sora, sans-serif;
+      font-size: 1.15rem;
+    }
+    .card p { margin: 0; color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
+    .card .go { display: inline-block; margin-top: 12px; color: var(--accent); font-weight: 600; font-size: 0.85rem; }
+    footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="kicker">Open map-agent eval lab</p>
+    <h1>Map Agent Arena</h1>
+    <p class="lede">
+      Cross-vendor Royal Rumble plus Mapbox and MapTiler skill graders.
+      Built to compare agent skill packs — not hosted on a personal homepage.
+    </p>
+    <div class="grid">
+      <a class="card span" href="./map-agent-rumble/">
+        <h2>Map Agent Royal Rumble</h2>
+        <p>Top-10 mapping platforms, shared skills, static rubrics, Cursor/Composer run attribution.</p>
+        <span class="go">Enter rumble →</span>
+      </a>
+      <a class="card" href="./mapbox-playground/agent-grader.html">
+        <h2>Mapbox Agent Grader</h2>
+        <p>Core + Extreme skill scoreboard for Mapbox GL JS agent packs.</p>
+        <span class="go">Open grader →</span>
+      </a>
+      <a class="card" href="./maptiler-playground/agent-grader.html">
+        <h2>MapTiler Agent Grader</h2>
+        <p>Automated checks against maptiler-skills for MapTiler SDK packs.</p>
+        <span class="go">Open grader →</span>
+      </a>
+    </div>
+    <footer>
+      Keys: copy <code>admin-boundaries/js/config.example.js</code> → <code>config.js</code>.
+      Source: <a href="https://github.com/jwitcoski/map-agent-arena">github.com/jwitcoski/map-agent-arena</a>
+    </footer>
+  </main>
+</body>
+</html>

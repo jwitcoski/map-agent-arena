@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Map Agent Royal Rumble â€” Rubix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #081018;
+      --bg2: #0d1824;
+      --ink: #eaf2f7;
+      --muted: #8aa0b4;
+      --line: rgba(180, 210, 230, 0.12);
+      --accent: #3ecfbf;
+      --accent-dim: rgba(62, 207, 191, 0.14);
+      --good: #5ee9a8;
+      --bad: #ff7b7b;
+      --warn: #f0c14a;
+      --pad: clamp(16px, 3vw, 36px);
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Outfit, system-ui, sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      background:
+        radial-gradient(900px 480px at 85% -10%, rgba(62, 207, 191, 0.12), transparent 55%),
+        radial-gradient(700px 420px at -5% 20%, rgba(56, 120, 180, 0.18), transparent 50%),
+        linear-gradient(180deg, #0b1520 0%, var(--bg) 40%, #060b11 100%);
+      background-attachment: fixed;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.35;
+      background-image:
+        linear-gradient(rgba(140, 180, 200, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(140, 180, 200, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+    }
+
+    .wrap { position: relative; z-index: 1; }
+
+    /* â€”â€” Hero â€”â€” */
+    .hero {
+      padding: calc(var(--pad) + 8px) var(--pad) 20px;
+      max-width: 1200px;
+    }
+    .hero-kicker {
+      margin: 0 0 10px;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .hero h1 {
+      margin: 0;
+      font-family: Sora, sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      max-width: 14ch;
+    }
+    .hero h1 span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.42em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      margin-top: 0.35em;
+      max-width: none;
+    }
+    .hero-lede {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.5;
+      max-width: 36rem;
+    }
+    .hero-lede a { color: var(--accent); text-decoration: none; }
+    .hero-lede a:hover { text-decoration: underline; }
+    .hero-meta {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .hero-meta strong { color: var(--ink); font-weight: 600; }
+
+    /* â€”â€” Standings â€”â€” */
+    .standings {
+      margin: 0 var(--pad) 8px;
+      max-width: 1200px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 0;
+    }
+    .standings-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .standings-track {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .stand-item {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      cursor: default;
+      transition: background .25s var(--ease), border-color .25s var(--ease);
+    }
+    .stand-item.live {
+      background: rgba(255,255,255,0.03);
+      border-color: var(--line);
+    }
+    .stand-item.winner {
+      border-color: rgba(94, 233, 168, 0.45);
+      background: rgba(94, 233, 168, 0.08);
+    }
+    .stand-item.pending { opacity: 0.55; }
+    .stand-rank { font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .stand-name { font-weight: 600; font-size: 0.85rem; }
+    .stand-score {
+      font-family: Sora, sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .stand-note { font-size: 0.68rem; color: var(--muted); }
+
+    /* â€”â€” Toolbar â€”â€” */
+    .toolbar {
+      padding: 18px var(--pad) 0;
+      max-width: 1200px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font: 600 0.78rem Outfit, sans-serif;
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .chip:hover { color: var(--ink); border-color: rgba(62,207,191,.35); }
+    .chip.active {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .chip-blurb {
+      width: 100%;
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .pager {
+      padding: 18px var(--pad) 8px;
+      max-width: 1200px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .pager h2 {
+      margin: 0;
+      font-family: Sora, sans-serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+      letter-spacing: -0.02em;
+    }
+    .pager .meta { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+    .pager .nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font: 600 0.8rem Outfit, sans-serif;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #04201c;
+    }
+    select.btn { appearance: none; padding-right: 28px; }
+
+    .view-toggle {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(0,0,0,0.25);
+    }
+    .view-toggle button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font: 600 0.75rem Outfit, sans-serif;
+      cursor: pointer;
+    }
+    .view-toggle button.on {
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    /* â€”â€” Stage (maps) â€”â€” */
+    .stage {
+      padding: 8px var(--pad) 8px;
+      max-width: 1400px;
+    }
+    .rubix-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .rubix-row.mode-all {
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    }
+    @media (max-width: 900px) {
+      .rubix-row { grid-template-columns: 1fr; }
+    }
+    .cell {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(18, 30, 42, 0.9), rgba(10, 16, 24, 0.95));
+      animation: rise .5s var(--ease) both;
+      min-height: 0;
+    }
+    .cell:nth-child(2) { animation-delay: .06s; }
+    .cell:nth-child(3) { animation-delay: .12s; }
+    .cell:nth-child(n+4) { animation-delay: .08s; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: none; }
+    }
+    .cell.pending-cell {
+      opacity: 0.72;
+    }
+    .cell-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px 14px 10px;
+      gap: 10px;
+    }
+    .cell-head strong {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: block;
+    }
+    .cell-sub {
+      margin-top: 2px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.35;
+      max-width: 28ch;
+    }
+    .cell-head a { color: var(--accent); text-decoration: none; }
+    .grade {
+      font-family: Sora, sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1;
+      min-width: 1.6rem;
+      text-align: right;
+    }
+    .grade.A { color: var(--good); }
+    .grade.B { color: #86efac; }
+    .grade.C { color: var(--warn); }
+    .grade.D, .grade.F { color: var(--bad); }
+    .grade.NA { color: var(--muted); font-size: 1.1rem; }
+    .cell iframe {
+      width: 100%;
+      height: 220px;
+      border: 0;
+      background: #05090e;
+      pointer-events: none;
+    }
+    .cell-foot {
+      padding: 10px 14px 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border-top: 1px solid var(--line);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .cell-foot button {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      font: 600 0.78rem Outfit, sans-serif;
+      padding: 0;
+    }
+    .pending-strip {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .pending-strip strong { color: var(--ink); }
+    .pending-dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .pending-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .pending-dot i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* â€”â€” Brief (collapsed) â€”â€” */
+    .brief-panel {
+      margin: 18px var(--pad) 8px;
+      max-width: 1200px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(8, 14, 22, 0.65);
+      overflow: hidden;
+    }
+    .brief-panel > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .brief-panel > summary::-webkit-details-marker { display: none; }
+    .brief-panel > summary::after {
+      content: "Show";
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .brief-panel[open] > summary::after { content: "Hide"; }
+    .brief-body { padding: 0 16px 16px; }
+    .brief-intro {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      max-width: 52rem;
+    }
+    .brief-intro a { color: var(--accent); }
+    .label {
+      margin: 14px 0 6px;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .prompt {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      max-width: 52rem;
+    }
+    .fighter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 12px;
+    }
+    .fighter-pill {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 11px;
+      font: 600 0.75rem Outfit, sans-serif;
+      cursor: pointer;
+    }
+    .fighter-pill.on {
+      color: var(--ink);
+      border-color: currentColor;
+      background: rgba(255,255,255,0.04);
+    }
+    .adapter-one {
+      border-left: 3px solid var(--accent);
+      padding: 4px 0 4px 12px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      max-width: 52rem;
+    }
+    .adapter-one strong { color: var(--ink); }
+    .adapter-one .fit {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .letters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .letters b { color: var(--accent); }
+    .rubric-one {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+    .rubric-one th, .rubric-one td {
+      text-align: left;
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    .rubric-one th { color: var(--muted); font-weight: 600; }
+    .rubric-one .w { color: var(--accent); width: 2.5rem; font-variant-numeric: tabular-nums; }
+    .rubric-one .id {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .rubric-one .why { color: var(--muted); font-size: 0.74rem; }
+    .na-note {
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding: 8px 0;
+    }
+
+    /* â€”â€” Board â€”â€” */
+    .board-wrap {
+      padding: 20px var(--pad) 28px;
+      max-width: 1400px;
+    }
+    .board-wrap h3 {
+      margin: 0 0 12px;
+      font-family: Sora, sans-serif;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .board-scroller {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .board {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      min-width: 720px;
+    }
+    .board th, .board td {
+      padding: 8px 7px;
+      text-align: center;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    .board th {
+      position: sticky;
+      top: 0;
+      background: #0c1520;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+    .board th.pending-col, .board td.pending-col { opacity: 0.45; }
+    .board td.skill {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background: #0a121c;
+      min-width: 150px;
+      color: var(--ink);
+      z-index: 1;
+    }
+    .board .mini-grade {
+      font-family: Sora, sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+    }
+    .tags { display: inline-flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+    .tag {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 1px 6px;
+      color: var(--muted);
+    }
+
+    .site-links {
+      padding: 0 var(--pad) 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.85rem;
+      max-width: 1200px;
+    }
+    .site-links a { color: var(--accent); text-decoration: none; }
+    .site-links a:hover { text-decoration: underline; }
+
+    dialog {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #0c1520;
+      color: var(--ink);
+      width: min(720px, 94vw);
+      padding: 0;
+    }
+    dialog::backdrop { background: rgba(0,0,0,.6); }
+    .dlg-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .dlg-body { padding: 14px; max-height: 70vh; overflow: auto; }
+    .dlg-run {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #080e16;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .dlg-run strong { color: var(--ink); }
+    .check-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; margin-top: 10px; }
+    .check-table th, .check-table td {
+      text-align: left;
+      padding: 5px 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pass { color: var(--good); }
+    .fail { color: var(--bad); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <p class="hero-kicker">Rubix Â· Top-10 map agent arena</p>
+      <h1>
+        Royal Rumble
+        <span>Same skill. Ten platforms. One grade.</span>
+      </h1>
+      <p class="hero-lede" id="headerBlurb">
+        Head-to-head skill packs for major mapping platforms. Live seats are graded now;
+        the rest await API keys â€” pending, not failing.
+      </p>
+      <div class="hero-meta">
+        <span><strong>Tool</strong> Cursor Agent Â· Composer</span>
+        <span><strong>Tokens</strong> estimated, not billed receipts</span>
+        <span><a href="./ADDING_A_FIGHTER.md">Add a platform â†’</a></span>
+      </div>
+    </header>
+
+    <section class="standings" aria-label="Category standings">
+      <div class="standings-label" id="standingsLabel">Category standings</div>
+      <div class="standings-track" id="leaderboard"></div>
+    </section>
+
+    <div class="toolbar">
+      <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
+      <div class="view-toggle" role="group" aria-label="Stage fighters">
+        <button type="button" id="modeLive" class="on">Live (3)</button>
+        <button type="button" id="modeAll">All 10</button>
+      </div>
+      <p class="chip-blurb" id="chipBlurb"></p>
+    </div>
+
+    <section class="pager">
+      <div>
+        <h2 id="skillTitle">Skill</h2>
+        <div class="meta" id="skillMeta"></div>
+      </div>
+      <div class="nav">
+        <button type="button" class="btn" id="prevSkill">â† Prev</button>
+        <select class="btn" id="skillSelect" aria-label="Select skill"></select>
+        <button type="button" class="btn" id="nextSkill">Next â†’</button>
+        <button type="button" class="btn primary" id="gradeAll">Grade</button>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="Skill stage">
+      <div class="rubix-row" id="rubixRow"></div>
+      <div class="pending-strip" id="pendingStrip" hidden></div>
+    </section>
+
+    <details class="brief-panel" id="rubricWrap">
+      <summary>Agent brief &amp; grading rubric</summary>
+      <div class="brief-body">
+        <p class="brief-intro" id="briefBanner">
+          Shared prompt for every seat. Pick a fighter to see its SDK adapter and weighted checks.
+          Live packs are imperfect skill-agent outputs â€” not free As.
+          <a href="./ADDING_A_FIGHTER.md">How seats get added</a>
+        </p>
+        <p class="label">Shared prompt</p>
+        <p class="prompt" id="rubricPrompt"></p>
+        <p class="label">Fighter</p>
+        <div class="fighter-pills" id="fighterPills"></div>
+        <div class="adapter-one" id="adapterOne"></div>
+        <div class="letters" id="rubricLetters"></div>
+        <p class="label">What we grade</p>
+        <div id="rubricGrid"></div>
+      </div>
+    </details>
+
+    <div class="board-wrap">
+      <h3>Full board</h3>
+      <div class="board-scroller">
+        <table class="board" id="board">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="site-links">
+      <a href="../mapbox-playground/agent-grader.html">Mapbox playground</a>
+      <a href="../maptiler-playground/agent-grader.html">MapTiler playground</a>
+      <a href="../">Esri playground</a>
+      <a href="../">Google playground</a>
+      <a href="../">Arena home</a>
+    </div>
+  </div>
+
+  <dialog id="detailDlg">
+    <div class="dlg-head">
+      <strong id="dlgTitle">Detail</strong>
+      <button type="button" class="btn" id="dlgClose">Close</button>
+    </div>
+    <div class="dlg-body">
+      <p id="dlgPrompt"></p>
+      <div class="dlg-run" id="dlgRun"></div>
+      <p><a id="dlgOpen" href="#" target="_blank" rel="noopener">Open solution â†—</a></p>
+      <div id="dlgGrade"></div>
+      <table class="check-table">
+        <thead><tr><th>W</th><th>Check</th><th>What we grade</th><th>Result</th></tr></thead>
+        <tbody id="dlgChecks"></tbody>
+      </table>
+      <iframe id="dlgFrame" title="Solution preview" style="width:100%;height:280px;border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#05090e;"></iframe>
+    </div>
+  </dialog>
+
+  <script src="./challenges/checks.js"></script>
+  <script>
+    (async function () {
+      const [catalog, categoriesDoc, fightersDoc] = await Promise.all([
+        fetch("./challenges/catalog.json").then((r) => r.json()),
+        fetch("./challenges/categories.json").then((r) => r.json()),
+        fetch("./fighters.json").then((r) => r.json()),
+      ]);
+
+      const fighters = fightersDoc.fighters;
+      const liveFighters = fighters.filter((f) => f.ready);
+      const pendingFighters = fighters.filter((f) => !f.ready);
+      const runEnvironment = fightersDoc.runEnvironment || {};
+      const categories = categoriesDoc.categories;
+      const skills = catalog.skills;
+      const tierWeights = catalog.tierWeights || { easy: 1, medium: 1.15, hard: 1.35, insane: 1.5 };
+
+      {
+        const blurb = document.getElementById("headerBlurb");
+        if (blurb) {
+          blurb.innerHTML =
+            `Head-to-head skill packs across a top-10 mapping roster. ` +
+            `<strong>${liveFighters.map((f) => f.label).join(" Â· ")}</strong> are live; ` +
+            `${pendingFighters.length} seats await API keys (pending, not F). ` +
+            `<a href="../mapbox-playground/agent-grader.html">Mapbox skillset</a> Â· ` +
+            `<a href="../maptiler-playground/agent-grader.html">MapTiler skillset</a>`;
+        }
+      }
+
+      let activeCategory = "all";
+      let skillIndex = 0;
+      let stageMode = "live"; // live | all
+      let briefFighterId = (liveFighters[0] && liveFighters[0].id) || fighters[0].id;
+      const gradeCache = new Map();
+      const metaCache = new Map();
+      const sourceCache = new Map();
+
+      function fmtTok(n) {
+        if (n == null || Number.isNaN(n)) return "â€”";
+        if (n >= 1000) return (Math.round(n / 100) / 10) + "k";
+        return String(n);
+      }
+
+      function stageFighters() {
+        return stageMode === "live" ? liveFighters : fighters;
+      }
+
+      async function loadMeta(fighterId, skillId) {
+        const key = fighterId + "|" + skillId;
+        if (metaCache.has(key)) return metaCache.get(key);
+        try {
+          const meta = await fetch(`./fighters/${fighterId}/${skillId}.meta.json`).then((r) => {
+            if (!r.ok) throw new Error("meta missing");
+            return r.json();
+          });
+          metaCache.set(key, meta);
+          return meta;
+        } catch (_) {
+          metaCache.set(key, null);
+          return null;
+        }
+      }
+
+      function runLine(f, meta) {
+        const run = f.run || {};
+        const model = (meta && meta.model) || run.model || "Composer";
+        if (!f.ready) return "Awaiting API";
+        return run.skillUsed ? `${model} Â· skills on` : `${model} Â· no skills`;
+      }
+
+      function tokenLine(meta) {
+        if (!meta || !meta.tokens || meta.tokens.total == null) return "";
+        const t = meta.tokens;
+        return ` Â· est. ${fmtTok(t.total)} tok`;
+      }
+
+      function filteredSkills() {
+        if (activeCategory === "all") return skills.filter((s) => s.track === "core");
+        return skills.filter((s) => (s.categories || []).includes(activeCategory));
+      }
+
+      function solutionUrl(fighterId, skillId) {
+        return `./fighters/${fighterId}/${skillId}.html`;
+      }
+
+      async function loadSource(fighterId, skillId) {
+        const key = fighterId + "|" + skillId;
+        if (sourceCache.has(key)) return sourceCache.get(key);
+        const res = await fetch(solutionUrl(fighterId, skillId));
+        const text = res.ok ? await res.text() : "";
+        sourceCache.set(key, text);
+        return text;
+      }
+
+      function isNA(fighter, skill) {
+        if (!RumbleChecks.canAttempt(fighter, skill)) return true;
+        return false;
+      }
+
+      async function gradeCell(fighter, skill) {
+        const key = fighter.id + "|" + skill.id;
+        if (gradeCache.has(key)) return gradeCache.get(key);
+        if (isNA(fighter, skill)) {
+          const result = { na: true, letter: "N/A", pct: null, checks: [], earned: 0, possible: 0 };
+          gradeCache.set(key, result);
+          return result;
+        }
+        const src = await loadSource(fighter.id, skill.id);
+        if (fighter.id === "maptiler" && /N\/A\s*â€”\s*MapTiler has no Directions/i.test(src)) {
+          const result = { na: true, letter: "N/A", pct: null, checks: [], earned: 0, possible: 0 };
+          gradeCache.set(key, result);
+          return result;
+        }
+        if (!fighter.ready) {
+          const result = { na: true, letter: "â€”", pct: null, checks: [], pending: true, earned: 0, possible: 0 };
+          gradeCache.set(key, result);
+          return result;
+        }
+        const checkIds =
+          (RumbleChecks.resolveCheckIds && RumbleChecks.resolveCheckIds(fighter, skill)) ||
+          (skill.checks && skill.checks[fighter.id]) ||
+          [];
+        const result = RumbleChecks.grade(src, checkIds);
+        gradeCache.set(key, result);
+        return result;
+      }
+
+      function categoryScore(fighter) {
+        const list = filteredSkills();
+        let sum = 0;
+        let weightSum = 0;
+        for (const skill of list) {
+          const g = gradeCache.get(fighter.id + "|" + skill.id);
+          if (!g || g.na || g.pending || g.pct == null) continue;
+          const w = tierWeights[skill.tier] || 1;
+          sum += g.pct * w;
+          weightSum += w;
+        }
+        if (!weightSum) return null;
+        return Math.round((10 * sum) / weightSum) / 10;
+      }
+
+      async function categoryTokens(fighter) {
+        const list = filteredSkills();
+        let total = 0;
+        let counted = 0;
+        await Promise.all(list.map(async (skill) => {
+          if (isNA(fighter, skill) || !fighter.ready) return;
+          const meta = await loadMeta(fighter.id, skill.id);
+          if (meta && meta.tokens && meta.tokens.total != null) {
+            total += meta.tokens.total;
+            counted += 1;
+          }
+        }));
+        return counted ? total : null;
+      }
+
+      async function renderLeaderboard() {
+        const el = document.getElementById("leaderboard");
+        const cat = categories.find((c) => c.id === activeCategory);
+        document.getElementById("standingsLabel").textContent = cat
+          ? `${cat.label} standings`
+          : "Category standings";
+
+        const scores = await Promise.all(fighters.map(async (f) => ({
+          f,
+          score: categoryScore(f),
+          tokens: await categoryTokens(f),
+        })));
+        const best = scores.reduce((a, b) => {
+          if (b.score == null) return a;
+          if (a.score == null || b.score > a.score) return b;
+          return a;
+        }, { score: null });
+
+        el.innerHTML = scores.map(({ f, score, tokens }) => {
+          const win = best.score != null && score === best.score && f.ready;
+          const cls = [
+            "stand-item",
+            f.ready ? "live" : "pending",
+            win ? "winner" : "",
+          ].join(" ");
+          return `<div class="${cls}" title="${f.strength || ""}">
+            <span class="stand-rank">#${f.rank || "â€“"}</span>
+            <span class="stand-name" style="color:${f.color}">${f.label}</span>
+            <span class="stand-score">${score == null ? (f.ready ? "â€”" : "â€¦") : score}</span>
+            <span class="stand-note">${
+              !f.ready
+                ? "awaiting"
+                : tokens != null
+                  ? "est. " + fmtTok(tokens)
+                  : ""
+            }</span>
+          </div>`;
+        }).join("");
+      }
+
+      function renderChips() {
+        const el = document.getElementById("chips");
+        el.innerHTML = categories.map((c) =>
+          `<button type="button" class="chip ${c.id === activeCategory ? "active" : ""}" data-cat="${c.id}">${c.label}</button>`
+        ).join("");
+        el.querySelectorAll(".chip").forEach((btn) => {
+          btn.onclick = () => {
+            activeCategory = btn.getAttribute("data-cat");
+            skillIndex = 0;
+            renderAll();
+          };
+        });
+        const cat = categories.find((c) => c.id === activeCategory);
+        document.getElementById("chipBlurb").textContent = cat
+          ? `${cat.blurb} Â· Best for: ${cat.bestFor}`
+          : "";
+      }
+
+      function renderRubric(skill) {
+        const promptEl = document.getElementById("rubricPrompt");
+        const lettersEl = document.getElementById("rubricLetters");
+        const grid = document.getElementById("rubricGrid");
+        const adapterOne = document.getElementById("adapterOne");
+        const pills = document.getElementById("fighterPills");
+        if (!skill) {
+          promptEl.textContent = "";
+          lettersEl.innerHTML = "";
+          grid.innerHTML = "";
+          adapterOne.innerHTML = "";
+          pills.innerHTML = "";
+          return;
+        }
+        promptEl.textContent = skill.prompt || "";
+
+        pills.innerHTML = fighters.map((f) =>
+          `<button type="button" class="fighter-pill ${f.id === briefFighterId ? "on" : ""}" data-id="${f.id}" style="${f.id === briefFighterId ? "color:" + f.color + ";border-color:" + f.color : ""}">#${f.rank || "â€“"} ${f.label}</button>`
+        ).join("");
+        pills.querySelectorAll(".fighter-pill").forEach((btn) => {
+          btn.onclick = () => {
+            briefFighterId = btn.getAttribute("data-id");
+            renderRubric(skill);
+          };
+        });
+
+        const f = fighters.find((x) => x.id === briefFighterId) || fighters[0];
+        const run = f.run || {};
+        adapterOne.style.borderColor = f.color;
+        adapterOne.innerHTML =
+          `<strong style="color:${f.color}">${f.label}</strong>` +
+          (f.strength ? ` Â· ${f.strength}` : "") +
+          `<div style="margin-top:6px">${f.adapterPrompt || f.skillsetNote || "â€”"}</div>` +
+          (f.agentTestFit ? `<div class="fit">${f.agentTestFit}</div>` : "") +
+          `<div class="fit" style="margin-top:6px">${
+            !f.ready
+              ? "Status: awaiting API"
+              : `Cursor Â· ${run.model || "Composer"} Â· ${run.skillUsed ? "skills on" : "no vendor skills"}`
+          }</div>`;
+
+        const sampleIds =
+          (skill.checks &&
+            (skill.checks.mapbox ||
+              skill.checks["no-agent"] ||
+              skill.checks.shared ||
+              Object.values(skill.checks).find((v) => Array.isArray(v) && v.length > 1))) ||
+          [];
+        const sampleRubric = RumbleChecks.rubric(sampleIds);
+        lettersEl.innerHTML =
+          sampleRubric.letters.map((row) => `<span><b>${row.letter}</b> â‰¥ ${row.min}%</span>`).join("") +
+          `<span>${sampleRubric.note}</span>`;
+
+        const na = isNA(f, skill) || !f.ready;
+        if (na) {
+          grid.innerHTML = `<p class="na-note">${
+            !f.ready
+              ? `Awaiting API / packs (${f.sdk || "vendor SDK"}) â€” not graded yet.`
+              : `N/A â€” missing capability (${(skill.requires || []).join(", ") || "required API"}). Not an F.`
+          }</p>`;
+          return;
+        }
+        const checkIds =
+          (RumbleChecks.resolveCheckIds && RumbleChecks.resolveCheckIds(f, skill)) ||
+          (skill.checks && skill.checks[f.id]) ||
+          [];
+        const r = RumbleChecks.rubric(checkIds);
+        const rows = r.checks.map((c) =>
+          `<tr>
+            <td class="w">${c.weight}</td>
+            <td class="id">${c.id}</td>
+            <td>${c.label}</td>
+            <td class="why">${c.why || ""}</td>
+          </tr>`
+        ).join("");
+        grid.innerHTML = `
+          <p class="na-note" style="margin:0 0 6px">${r.possible} pts Â· ${r.checks.length} checks</p>
+          <table class="rubric-one">
+            <thead><tr><th>W</th><th>Id</th><th>Look for</th><th>Why</th></tr></thead>
+            <tbody>${rows || `<tr><td colspan="4">No checks</td></tr>`}</tbody>
+          </table>`;
+      }
+
+      function renderPendingStrip() {
+        const strip = document.getElementById("pendingStrip");
+        if (stageMode !== "live" || !pendingFighters.length) {
+          strip.hidden = true;
+          strip.innerHTML = "";
+          return;
+        }
+        strip.hidden = false;
+        strip.innerHTML =
+          `<strong>${pendingFighters.length} seats awaiting API</strong> â€” shown as pending on the full board, not failing grades.` +
+          `<div class="pending-dots">${pendingFighters.map((f) =>
+            `<span class="pending-dot"><i style="background:${f.color}"></i>#${f.rank} ${f.label}</span>`
+          ).join("")}</div>`;
+      }
+
+      async function renderPager() {
+        const list = filteredSkills();
+        const row = document.getElementById("rubixRow");
+        if (!list.length) {
+          document.getElementById("skillTitle").textContent = "No skills in this category";
+          row.innerHTML = "";
+          renderRubric(null);
+          renderPendingStrip();
+          return;
+        }
+        skillIndex = Math.max(0, Math.min(skillIndex, list.length - 1));
+        const skill = list[skillIndex];
+        document.getElementById("skillTitle").textContent = `${skill.id}: ${skill.title}`;
+        document.getElementById("skillMeta").innerHTML =
+          `<span class="tags">${(skill.categories || []).map((t) => `<span class="tag">${t}</span>`).join("")}</span>
+           Â· ${skill.tier}` +
+          (skill.requires ? ` Â· requires ${skill.requires.join(", ")}` : "");
+
+        const sel = document.getElementById("skillSelect");
+        sel.innerHTML = list.map((s, i) =>
+          `<option value="${i}" ${i === skillIndex ? "selected" : ""}>${s.id} â€” ${s.title}</option>`
+        ).join("");
+
+        renderRubric(skill);
+        renderPendingStrip();
+
+        const shown = stageFighters();
+        row.className = "rubix-row" + (stageMode === "all" ? " mode-all" : "");
+        row.innerHTML = shown.map((f) => `
+          <article class="cell ${f.ready ? "" : "pending-cell"}" data-fighter="${f.id}">
+            <div class="cell-head">
+              <div>
+                <strong style="color:${f.color}">#${f.rank || "â€“"} ${f.label}</strong>
+                <div class="cell-sub">${
+                  f.skillsetUrl
+                    ? `<a href="${f.skillsetUrl}" target="_blank" rel="noopener">${f.skillsetLabel || "Skillset"}</a>`
+                    : (f.strength || f.skillsetNote || "")
+                }</div>
+              </div>
+              <div class="grade" id="grade-${f.id}">â€¦</div>
+            </div>
+            <iframe title="${f.label} ${skill.id}" src="" data-src="${solutionUrl(f.id, skill.id)}"></iframe>
+            <div class="cell-foot">
+              <span id="pct-${f.id}">gradingâ€¦</span>
+              <button type="button" data-open="${f.id}">Details</button>
+            </div>
+          </article>
+        `).join("");
+
+        await Promise.all(shown.map(async (f) => {
+          const g = await gradeCell(f, skill);
+          const meta = await loadMeta(f.id, skill.id);
+          const gradeEl = document.getElementById("grade-" + f.id);
+          const pctEl = document.getElementById("pct-" + f.id);
+          const iframe = row.querySelector(`[data-fighter="${f.id}"] iframe`);
+          if (g.na || g.pending) {
+            gradeEl.textContent = g.letter;
+            gradeEl.className = "grade NA";
+            pctEl.textContent = g.pending ? "Awaiting API" : "N/A (capability)";
+            iframe.removeAttribute("src");
+            iframe.srcdoc = `<body style="margin:0;display:flex;align-items:center;justify-content:center;height:100%;background:#05090e;color:#8aa0b4;font:600 14px Outfit,system-ui">${g.pending ? "Awaiting API" : "N/A"}</body>`;
+          } else {
+            gradeEl.textContent = g.letter;
+            gradeEl.className = "grade " + g.letter;
+            pctEl.textContent = `${g.pct}% Â· ${g.earned}/${g.possible}${tokenLine(meta)}`;
+            iframe.src = solutionUrl(f.id, skill.id);
+          }
+          pctEl.title = runLine(f, meta);
+        }));
+
+        row.querySelectorAll("[data-open]").forEach((btn) => {
+          btn.onclick = () => openDetail(btn.getAttribute("data-open"), skill);
+        });
+
+        await renderLeaderboard();
+      }
+
+      async function openDetail(fighterId, skill) {
+        const f = fighters.find((x) => x.id === fighterId);
+        const g = await gradeCell(f, skill);
+        const meta = await loadMeta(f.id, skill.id);
+        const dlg = document.getElementById("detailDlg");
+        document.getElementById("dlgTitle").textContent = `${f.label} Â· ${skill.id} ${skill.title}`;
+        document.getElementById("dlgPrompt").textContent = skill.prompt;
+        const runEl = document.getElementById("dlgRun");
+        if (runEl) {
+          const t = meta && meta.tokens;
+          runEl.innerHTML = `
+            <div><strong>Tool:</strong> ${(meta && meta.tool) || "Cursor Agent"} Â· <strong>AI:</strong> ${(meta && meta.model) || (f.run && f.run.model) || "Composer"}</div>
+            <div>${(meta && meta.modelNote) || (f.run && f.run.modelNote) || ""}</div>
+            <div><strong>Tokens (est.):</strong> ${
+              t && t.total != null
+                ? `${fmtTok(t.total)} total Â· in ${fmtTok(t.input)} Â· out ${fmtTok(t.output)}`
+                : "â€”"
+            }</div>
+            ${f.agentTestFit ? `<div style="margin-top:6px">${f.agentTestFit}</div>` : ""}
+          `;
+        }
+        document.getElementById("dlgOpen").href = solutionUrl(f.id, skill.id);
+        document.getElementById("dlgGrade").textContent = g.na || g.pending
+          ? (g.pending ? "Pending / awaiting API" : "N/A â€” fighter lacks required capability")
+          : `Grade ${g.letter} (${g.pct}%)`;
+        document.getElementById("dlgChecks").innerHTML = (g.checks || []).map((c) => {
+          const label = (RumbleChecks.CHECK_LABELS && RumbleChecks.CHECK_LABELS[c.id]) || c.detail || c.id;
+          const why = (RumbleChecks.CHECK_WHY && RumbleChecks.CHECK_WHY[c.id]) || "";
+          return `<tr><td>${c.weight}</td><td><code>${c.id}</code></td><td>${label}<div style="color:var(--muted);font-size:0.72rem;margin-top:2px">${why}</div></td><td class="${c.pass ? "pass" : "fail"}">${c.pass ? "pass" : "fail"} â€” ${c.detail}</td></tr>`;
+        }).join("") || `<tr><td colspan="4">No checks</td></tr>`;
+        document.getElementById("dlgFrame").src = solutionUrl(f.id, skill.id);
+        dlg.showModal();
+      }
+
+      async function renderBoard() {
+        const list = filteredSkills();
+        const thead = document.querySelector("#board thead");
+        const tbody = document.querySelector("#board tbody");
+        thead.innerHTML = `<tr><th>Skill</th>${fighters.map((f) =>
+          `<th class="${f.ready ? "" : "pending-col"}" style="color:${f.color}">#${f.rank} ${f.label}</th>`
+        ).join("")}</tr>`;
+
+        await Promise.all(list.flatMap((skill) => fighters.map((f) => gradeCell(f, skill))));
+
+        tbody.innerHTML = list.map((skill) => {
+          const cells = fighters.map((f) => {
+            const g = gradeCache.get(f.id + "|" + skill.id);
+            const pend = !f.ready ? "pending-col" : "";
+            if (!g || g.na || g.pending) {
+              return `<td class="${pend}"><span class="mini-grade" style="color:var(--muted)">${g && g.pending ? "â€”" : "N/A"}</span></td>`;
+            }
+            return `<td class="${pend}"><span class="mini-grade grade ${g.letter}" style="color:inherit">${g.letter}</span><div style="color:var(--muted);font-size:0.68rem">${g.pct}%</div></td>`;
+          }).join("");
+          return `<tr>
+            <td class="skill"><strong>${skill.id}</strong> ${skill.title}
+              <div class="tags">${(skill.categories || []).map((t) => `<span class="tag">${t}</span>`).join("")}</div>
+            </td>${cells}
+          </tr>`;
+        }).join("");
+        await renderLeaderboard();
+      }
+
+      async function renderAll() {
+        renderChips();
+        await renderPager();
+        await renderBoard();
+      }
+
+      function setStageMode(mode) {
+        stageMode = mode;
+        document.getElementById("modeLive").classList.toggle("on", mode === "live");
+        document.getElementById("modeAll").classList.toggle("on", mode === "all");
+        renderPager();
+      }
+      document.getElementById("modeLive").onclick = () => setStageMode("live");
+      document.getElementById("modeAll").onclick = () => setStageMode("all");
+
+      document.getElementById("prevSkill").onclick = () => {
+        skillIndex = Math.max(0, skillIndex - 1);
+        renderPager();
+      };
+      document.getElementById("nextSkill").onclick = () => {
+        const list = filteredSkills();
+        skillIndex = Math.min(list.length - 1, skillIndex + 1);
+        renderPager();
+      };
+      document.getElementById("skillSelect").onchange = (e) => {
+        skillIndex = Number(e.target.value);
+        renderPager();
+      };
+      document.getElementById("gradeAll").onclick = async () => {
+        gradeCache.clear();
+        metaCache.clear();
+        sourceCache.clear();
+        await renderAll();
+      };
+      document.getElementById("dlgClose").onclick = () => document.getElementById("detailDlg").close();
+
+      await renderAll();
+    })();
+  </script>
+</body>
+</html>
