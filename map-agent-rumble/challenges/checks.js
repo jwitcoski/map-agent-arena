@@ -83,56 +83,72 @@
       const ok = /MAPTILER_API_KEY/.test(src) && /(!\s*key|!window\.MAPTILER|missing|throw)/i.test(src);
       return pts(ok, 10, "key_guard", ok ? "Guard" : "Missing-key guard");
     },
+    google_key_hygiene(src) {
+      const hard =
+        /GOOGLE_MAPS_API_KEY\s*=\s*["']AIza[A-Za-z0-9_-]{10,}["']/i.test(src) ||
+        /[?&]key=["']AIza[A-Za-z0-9_-]{20,}["']/i.test(src);
+      return pts(!hard, 14, "google_key_hygiene", hard ? "Hardcoded Google key" : "OK");
+    },
+    google_key_guard(src) {
+      const ok =
+        /GOOGLE_MAPS_API_KEY/.test(src) && /(!\s*key|!window\.GOOGLE|missing|throw)/i.test(src);
+      return pts(ok, 10, "google_key_guard", ok ? "Guard" : "Missing Google key guard");
+    },
     prague_center(src) {
-      const ok = /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src);
-      return pts(ok, 10, "prague_center", ok ? "Prague" : "Center Prague [14.4178, 50.1167]");
+      const ok =
+        /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src) ||
+        (/lat\s*:\s*50\.1167/.test(src) && /lng\s*:\s*14\.4178/.test(src));
+      return pts(ok, 10, "prague_center", ok ? "Prague" : "Center Prague [14.4178, 50.1167] or {lat:50.1167,lng:14.4178}");
     },
     full_viewport(src) {
       const ok = /#map/.test(src) && /height:\s*100%|inset:\s*0|100vh/.test(src);
       return pts(ok, 8, "full_viewport", ok ? "Full viewport" : "Full-viewport #map");
     },
     has_markers(src) {
-      const ctor = (src.match(/new\s+(?:mapboxgl|maplibregl|maptilersdk)\.Marker\s*\(/g) || []).length;
+      const ctor = (
+        src.match(/new\s+(?:mapboxgl|maplibregl|maptilersdk|google\.maps)\.Marker\s*\(/g) || []
+      ).length;
       const coords = (src.match(/\[\s*-?\d+\.\d+\s*,\s*-?\d+\.\d+/g) || []).length;
+      const gLatLng = (src.match(/lat\s*:\s*-?\d+\.\d+[\s\S]{0,40}lng\s*:\s*-?\d+\.\d+/g) || []).length;
       const looped =
         /\.forEach/.test(src) &&
         /Marker/.test(src) &&
         !/Only one/.test(src) &&
-        coords >= 3;
+        (coords >= 3 || gLatLng >= 3);
       const ok = ctor >= 3 || looped;
-      return pts(ok, 12, "has_markers", ok ? `Markers (ctors=${ctor}, coords=${coords})` : "Need ≥3 markers/points");
+      return pts(ok, 12, "has_markers", ok ? `Markers (ctors=${ctor}, coords=${coords})` : "Need >=3 markers/points");
     },
     has_popup(src) {
-      const ok = /Popup|popup|setPopup|infoWindow|bindPopup/i.test(src);
+      const ok = /Popup|popup|setPopup|infoWindow|InfoWindow|bindPopup/i.test(src);
       return pts(ok, 10, "has_popup", ok ? "Popup" : "Need popups/info UI");
     },
     style_switcher(src) {
       const dataStyles = src.match(/data-style="[^"]+"/g) || [];
       const unique = new Set(dataStyles);
       const mapStyles = (src.match(/MapStyle\.\w+/g) || []).length;
-      const ok = unique.size >= 3 || mapStyles >= 3;
-      return pts(ok, 12, "style_switcher", ok ? `≥3 styles (${unique.size || mapStyles})` : "Need ≥3 distinct style controls");
+      const mapTypes = (src.match(/data-type="[^"]+"/g) || []).length;
+      const ok = unique.size >= 3 || mapStyles >= 3 || mapTypes >= 3;
+      return pts(ok, 12, "style_switcher", ok ? `>=3 styles (${unique.size || mapStyles || mapTypes})` : "Need >=3 distinct style controls");
     },
     set_style(src) {
-      const ok = /setStyle|style\s*=/i.test(src);
-      return pts(ok, 8, "set_style", ok ? "setStyle" : "Call setStyle / change style");
+      const ok = /setStyle|setMapTypeId|mapTypeId|style\s*=/i.test(src);
+      return pts(ok, 8, "set_style", ok ? "setStyle/mapType" : "Call setStyle / setMapTypeId");
     },
     has_atmosphere(src) {
-      const ok = /setFog|lightPreset|halo|space|atmosphere|fog/i.test(src);
+      const ok = /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType/i.test(src);
       return pts(ok, 14, "has_atmosphere", ok ? "Atmosphere" : "Fog/lights/globe mood");
     },
     geocode_forward(src) {
-      const ok = /geocod|searchbox|nominatim|forward|\/search\?/i.test(src);
+      const ok = /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService/i.test(src);
       return pts(ok, 12, "geocode_forward", ok ? "Forward geocode" : "Forward geocode/search");
     },
     geocode_reverse(src) {
       const omitted = /click reverse omitted|reverse omitted|TODO reverse/i.test(src);
       const ok =
         !omitted &&
-        (/\/reverse\b|reverse\?|method:\s*['"]reverse['"]/i.test(src) ||
-          (/map\.on\(\s*['"]click['"]/i.test(src) &&
-            /geocod|nominatim/i.test(src) &&
-            /lngLat\.(lng|lon)|e\.lngLat/i.test(src)));
+        (/\/reverse\b|reverse\?|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location/i.test(src) ||
+          (/map\.on\(\s*['"]click['"]|addListener\(\s*map\s*,\s*['"]click['"]/i.test(src) &&
+            /geocod|nominatim|Geocoder/i.test(src)));
       return pts(ok, 12, "geocode_reverse", ok ? "Reverse" : "Reverse geocode on click");
     },
     has_debounce(src) {
@@ -140,19 +156,19 @@
       return pts(ok, 8, "has_debounce", ok ? "Debounce" : "Debounce search input");
     },
     has_flyto(src) {
-      const ok = /flyTo|easeTo|goTo|setView|animateTo/i.test(src);
-      return pts(ok, 12, "has_flyto", ok ? "Camera move" : "flyTo/easeTo sequence");
+      const ok = /flyTo|easeTo|goTo|setView|animateTo|panTo|panBy/i.test(src);
+      return pts(ok, 12, "has_flyto", ok ? "Camera move" : "flyTo/easeTo/panTo sequence");
     },
     has_pitch_or_bearing(src) {
-      const ok = /pitch|bearing/i.test(src);
-      return pts(ok, 10, "has_pitch_or_bearing", ok ? "Pitch/bearing" : "Change pitch or bearing");
+      const ok = /pitch|bearing|setTilt|setHeading|tilt|heading/i.test(src);
+      return pts(ok, 10, "has_pitch_or_bearing", ok ? "Pitch/bearing" : "Change pitch/tilt or bearing/heading");
     },
     has_inset(src) {
       const ok = /inset|#overview|overview-map|minimap/i.test(src);
       return pts(ok, 14, "has_inset", ok ? "Inset" : "Need inset/overview map");
     },
     extent_rect(src) {
-      const ok = /extent|bounds|getBounds|rectangle|bbox/i.test(src);
+      const ok = /extent|bounds|getBounds|rectangle|bbox|LatLngBounds/i.test(src);
       return pts(ok, 10, "extent_rect", ok ? "Extent" : "Show main extent on inset");
     },
     has_extrusion(src) {
@@ -164,11 +180,14 @@
       return pts(ok, 14, "has_terrain", ok ? "Terrain" : "Enable terrain/DEM");
     },
     has_terrain_or_honest(src) {
-      const ok = /setTerrain|terrain-dem|terrain\s*:\s*true|exaggeration|no terrain|honest|hillshade|pitch:\s*6/i.test(src);
+      const ok =
+        /setTerrain|terrain-dem|terrain\s*:\s*true|exaggeration|no terrain|honest|hillshade|pitch:\s*6|tilt:\s*45|no DEM/i.test(
+          src
+        );
       return pts(ok, 12, "has_terrain_or_honest", ok ? "Terrain or honest fallback" : "Terrain or documented fallback");
     },
     has_cluster(src) {
-      const ok = /cluster\s*:\s*true|clustered|supercluster|clusterMaxZoom/i.test(src);
+      const ok = /cluster\s*:\s*true|clustered|supercluster|clusterMaxZoom|MarkerClusterer/i.test(src);
       return pts(ok, 14, "has_cluster", ok ? "Cluster" : "Enable clustering");
     },
     has_story_chapters(src) {
@@ -189,9 +208,8 @@
       const ui = /swipe|compare|clip-path|splitter|map-compare/i.test(src);
       // Swipe compare must keep maps geographically synced while dragging/panning
       const synced =
-        /function\s+bind\s*\([^)]*\)\s*\{[^}]*jumpTo|function\s+bind\s*\([^)]*\)\s*\{[^}]*setCenter|on\(\s*["']move["'][\s\S]{0,200}(jumpTo|easeTo|setCenter)/i.test(
-          src
-        ) && !/maps not synced/i.test(src);
+        /function\s+bind\s*\([^)]*\)\s*\{[\s\S]{0,400}(jumpTo|setCenter|setZoom|easeTo)/i.test(src) &&
+        !/maps not synced/i.test(src);
       const ok = ui && synced;
       return pts(ok, 14, "has_swipe", ok ? "Swipe + sync" : ui ? "Swipe UI but maps not synced" : "Swipe/compare control");
     },
@@ -214,17 +232,19 @@
       return pts(ok, 12, "has_game_controls", ok ? "Controls" : "Keyboard/pointer controls");
     },
     has_follow_cam(src) {
-      const ok = /follow|setCenter|easeTo|jumpTo|camera.*car|car.*camera/i.test(src);
+      const ok = /follow|setCenter|easeTo|jumpTo|panTo|camera.*car|car.*camera/i.test(src);
       return pts(ok, 10, "has_follow_cam", ok ? "Follow cam" : "Camera follows vehicle");
     },
     has_track(src) {
-      const ok = /track|LineString|race|street|route\.geometry/i.test(src);
+      const ok = /track|LineString|race|street|route\.geometry|overview_path|Polyline/i.test(src);
       return pts(ok, 10, "has_track", ok ? "Track layer" : "Visible street/track LineString");
     },
     real_street_route(src) {
       const ok =
-        /directions\/v5|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(src) &&
-        !/hand-?drawn rectangle|fake track|toy oval/i.test(src);
+        (/directions\/v5|DirectionsService|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
+          src
+        ) &&
+          !/hand-?drawn rectangle|fake track|toy oval/i.test(src));
       return pts(ok, 16, "real_street_route", ok ? "Routed street geometry" : "Load track from Directions/OSRM/map-matching (real street)");
     },
     road_constrained(src) {
@@ -244,7 +264,7 @@
       return pts(ok, 14, "has_directions", ok ? "Directions" : "Directions/routing API");
     },
     has_line_layer(src) {
-      const ok = /line|LineString|addLayer.*line/i.test(src);
+      const ok = /line|LineString|addLayer.*line|Polyline|polyline/i.test(src);
       return pts(ok, 10, "has_line_layer", ok ? "Line" : "Draw route line");
     },
     has_isochrone(src) {
@@ -367,6 +387,8 @@
     open_style: "Open/demo tiles style URL",
     token_guard: "Missing-token guard",
     key_guard: "Missing-key guard",
+    google_key_hygiene: "No hardcoded Google Maps key",
+    google_key_guard: "Missing Google Maps key guard",
     prague_center: "Center Prague [14.4178, 50.1167]",
     full_viewport: "Full-viewport #map",
     has_markers: "Markers / points (≥3 expected in prompt)",
@@ -440,6 +462,8 @@
     open_style: "No Agent must render a real open basemap (OpenFreeMap, etc.), not an empty canvas.",
     token_guard: "Missing-token UX prevents a blank white crash for end users.",
     key_guard: "Same for MapTiler API key.",
+    google_key_hygiene: "Same leak risk for Google Maps API keys.",
+    google_key_guard: "Missing-key UX for Google Maps Platform.",
     prague_center: "Shared geographic fixture — also catches classic [lat,lng] vs [lng,lat] swaps.",
     full_viewport: "A 'hello map' that is a tiny div fails the product brief.",
     has_markers: "Pins & popups is useless without multiple interactive points.",

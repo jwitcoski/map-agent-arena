@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Google S15 — awaiting API</title>
-  
+  <title>S15 On-street Drive - Google</title>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +42,65 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Google S15</strong>
-    <p>Google seat awaiting GOOGLE_MAPS_API_KEY and Google Maps JavaScript API packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Drive</strong>
+  <p>Arrow keys / WASD · follow cam on street route</p>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.GOOGLE_MAPS_API_KEY;
+  function loadMaps(cb) {
+    if (window.google && google.maps) return cb();
+    const s = document.createElement("script");
+    s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(key) + "&libraries=places,geometry";
+    s.async = true;
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+  
+  loadMaps(() => {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 50.1167, lng: 14.4178 } /* [14.4178, 50.1167] */,
+      zoom: 15,
+      tilt: 45
+    });
+    const ds = new google.maps.DirectionsService();
+    const car = new google.maps.Marker({ map, position: { lat: 50.1167, lng: 14.4178 } /* [14.4178, 50.1167] */ });
+    let path = [], progress = 0, keys = {};
+    ds.route(
+      {
+        origin: { lat: 50.1167, lng: 14.4178 },
+        destination: { lat: 50.0865, lng: 14.4005 },
+        travelMode: "DRIVING"
+      },
+      (res, status) => {
+        if (status !== "OK") return;
+        path = res.routes[0].overview_path;
+        new google.maps.Polyline({ path, map, strokeColor: "#6ec8ff", strokeWeight: 4 });
+      }
+    );
+    window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
+    window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+    function tick() {
+      if (path.length > 1) {
+        if (keys["arrowup"] || keys.w) progress = Math.min(1, progress + 0.004);
+        if (keys["arrowdown"] || keys.s) progress = Math.max(0, progress - 0.004);
+        const i = Math.min(path.length - 2, Math.floor(progress * (path.length - 1)));
+        const t = progress * (path.length - 1) - i;
+        const a = path[i], b = path[i + 1];
+        const lat = a.lat() + (b.lat() - a.lat()) * t;
+        const lng = a.lng() + (b.lng() - a.lng()) * t;
+        const pos = { lat, lng };
+        car.setPosition(pos);
+        map.panTo(pos);
+        map.setHeading((google.maps.geometry.spherical.computeHeading(a, b) + 360) % 360);
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

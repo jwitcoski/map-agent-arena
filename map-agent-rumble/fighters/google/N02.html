@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Google N02 — awaiting API</title>
-  
+  <title>N02 Geocode + Route - Google</title>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +42,51 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Google N02</strong>
-    <p>Google seat awaiting GOOGLE_MAPS_API_KEY and Google Maps JavaScript API packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <input id="from" placeholder="From" value="Old Town Square, Prague" />
+  <input id="to" placeholder="To" value="Prague Castle" />
+  <button type="button" id="go">Route</button>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.GOOGLE_MAPS_API_KEY;
+  function loadMaps(cb) {
+    if (window.google && google.maps) return cb();
+    const s = document.createElement("script");
+    s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(key) + "&libraries=places,geometry";
+    s.async = true;
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+  
+  loadMaps(() => {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 50.1167, lng: 14.4178 } /* [14.4178, 50.1167] */,
+      zoom: 12
+    });
+    const geocoder = new google.maps.Geocoder();
+    const ds = new google.maps.DirectionsService();
+    let line = null;
+    function geocode(q) {
+      return new Promise((resolve, reject) => {
+        geocoder.geocode({ address: q }, (results, status) => {
+          if (status === "OK" && results[0]) resolve(results[0].geometry.location);
+          else reject(status);
+        });
+      });
+    }
+    document.getElementById("go").onclick = async () => {
+      const origin = await geocode(document.getElementById("from").value);
+      const destination = await geocode(document.getElementById("to").value);
+      ds.route({ origin, destination, travelMode: "DRIVING" }, (res, status) => {
+        if (status !== "OK") return;
+        if (line) line.setMap(null);
+        line = new google.maps.Polyline({ path: res.routes[0].overview_path, map, strokeWeight: 5 });
+      });
+    };
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

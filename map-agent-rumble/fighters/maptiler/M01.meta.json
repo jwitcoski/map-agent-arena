@@ -6,7 +6,7 @@
   "notes": "Skill-agent pack with intentional gaps (not gold)",
   "runEnvironment": {
     "tool": "Cursor",
-    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "provider": "cursor",
   "tool": "Cursor Agent",
@@ -16,9 +16,9 @@
   "skillPack": "maptiler/maptiler-skills",
   "attempts": 1,
   "tokens": {
-    "input": 36063,
+    "input": 36064,
     "output": 741,
-    "total": 36804,
+    "total": 36805,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },

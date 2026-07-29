@@ -1,25 +1,26 @@
 {
   "skillId": "S13",
   "fighter": "google",
-  "agentLabel": "Google (awaiting API)",
-  "ready": false,
-  "notes": "Awaiting API",
+  "agentLabel": "Google skill-agent (imperfect)",
+  "ready": true,
+  "notes": "Skill-agent pack with intentional gaps (not gold)",
   "runEnvironment": {
     "tool": "Cursor",
-    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "provider": "cursor",
   "tool": "Cursor Agent",
-  "model": null,
-  "modelNote": "Not run yet — awaiting Google Maps Platform keys + packs",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) Google Maps JS packs (imperfect skill-agent)",
   "skillUsed": false,
   "skillPack": null,
-  "attempts": 0,
+  "attempts": 1,
   "tokens": {
-    "input": null,
-    "output": null,
-    "total": null,
-    "estimate": true
+    "input": 8084,
+    "output": 1081,
+    "total": 9165,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": null
+  "latencySec": 11
 }

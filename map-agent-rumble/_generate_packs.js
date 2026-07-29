@@ -1777,10 +1777,13 @@ noAgent.M02 = () => naShell("M02", `
   window.__MAP__ = map;
 </script>`);
 
+const { google, degradeGoogle } = require("./_google_packs.js")({ shell });
+
 const packs = {
   mapbox,
   maptiler,
   "no-agent": noAgent,
+  google,
   esri: Object.fromEntries(SKILLS.map((id) => [id, () => esriPlaceholder(id, id)])),
 };
 
@@ -2052,6 +2055,7 @@ for (const fighter of FIGHTERS) {
     if (fighter === "no-agent") html = degradeNoAgent(id, html);
     if (fighter === "mapbox") html = degradeMapbox(id, html);
     if (fighter === "maptiler") html = degradeMaptiler(id, html);
+    if (fighter === "google") html = degradeGoogle(id, html);
     fs.writeFileSync(path.join(dir, id + ".html"), html);
 
     const skill = skillsById[id] || { id, prompt: "" };
@@ -2073,6 +2077,8 @@ for (const fighter of FIGHTERS) {
                 ? "Mapbox skill-agent (imperfect)"
                 : fighter === "maptiler"
                   ? "MapTiler skill-agent (imperfect)"
+                  : fighter === "google"
+                    ? "Google skill-agent (imperfect)"
                   : fighterMeta.label || fighter,
           ready: !awaiting,
           notes: awaiting

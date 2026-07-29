@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Google S12 — awaiting API</title>
-  
+  <title>S12 Layer Studio - Google</title>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +42,63 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Google S12</strong>
-    <p>Google seat awaiting GOOGLE_MAPS_API_KEY and Google Maps JavaScript API packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Layer studio</strong>
+  <label><input type="checkbox" data-layer="heat" checked /> Heat circles</label>
+  <label><input type="checkbox" data-layer="line" checked /> Corridor</label>
+  <label><input type="checkbox" data-layer="pts" checked /> Sites</label>
+  <label>Opacity <input id="op" type="range" min="0" max="100" value="70" /></label>
+  <label>Filter <input id="filt" type="range" min="0" max="10" value="0" /></label>
+  <div class="legend">Legend: heat · corridor · sites</div>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.GOOGLE_MAPS_API_KEY;
+  function loadMaps(cb) {
+    if (window.google && google.maps) return cb();
+    const s = document.createElement("script");
+    s.src = "https://maps.googleapis.com/maps/api/js?key=" + encodeURIComponent(key) + "&libraries=places,geometry";
+    s.async = true;
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+  
+  loadMaps(() => {
+    const map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: 50.1167, lng: 14.4178 } /* [14.4178, 50.1167] */,
+      zoom: 12
+    });
+    const heat = [
+      new google.maps.Circle({ center: { lat: 50.11, lng: 14.42 }, radius: 600, map, fillColor: "#f87171", fillOpacity: 0.35, strokeWeight: 0 }),
+      new google.maps.Circle({ center: { lat: 50.09, lng: 14.40 }, radius: 500, map, fillColor: "#f87171", fillOpacity: 0.35, strokeWeight: 0 })
+    ];
+    const line = new google.maps.Polyline({
+      path: [{ lat: 50.12, lng: 14.40 }, { lat: 50.08, lng: 14.43 }],
+      map, strokeColor: "#6ec8ff", strokeWeight: 4
+    });
+    const pts = [
+      new google.maps.Marker({ position: { lat: 50.10, lng: 14.41 }, map }),
+      new google.maps.Marker({ position: { lat: 50.085, lng: 14.42 }, map })
+    ];
+    const layers = { heat, line: [line], pts };
+    document.querySelectorAll("[data-layer]").forEach((el) => {
+      el.addEventListener("change", () => {
+        const id = el.getAttribute("data-layer");
+        const on = el.checked;
+        (layers[id] || []).forEach((o) => o.setMap(on ? map : null));
+      });
+    });
+    document.getElementById("op").oninput = (e) => {
+      const o = Number(e.target.value) / 100;
+      heat.forEach((c) => c.setOptions({ fillOpacity: o * 0.5 }));
+      line.setOptions({ strokeOpacity: o });
+    };
+    
+      pts.forEach((m, i) => m.setMap(i >= n ? map : null));
+    };
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

@@ -7,7 +7,8 @@
   "pinned": {
     "mapboxGlJs": "v3.9.0",
     "maptilerSdk": "v4.0.2",
-    "maplibreGl": "v4.7.1"
+    "maplibreGl": "v4.7.1",
+    "googleMapsJs": "weekly"
   },
   "tierWeights": {
     "easy": 1,
@@ -63,7 +64,14 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "google_key_hygiene",
+          "google_key_guard",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -127,7 +135,14 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "google_key_hygiene",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -190,7 +205,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -248,7 +269,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -310,7 +336,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "loads_config",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -372,7 +404,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -433,7 +471,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -497,7 +541,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -558,7 +608,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_terrain_or_honest",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -620,7 +676,13 @@
           "cluster_volume"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
         ],
         "here": [
           "awaiting_api"
@@ -679,7 +741,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -738,7 +805,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -795,7 +867,11 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -854,7 +930,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -925,7 +1006,16 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -979,7 +1069,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -1035,7 +1130,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "loads_config",
+          "geocode_forward",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -1087,9 +1187,7 @@
           "min_substance_hard",
           "no_stub_placeholder"
         ],
-        "google": [
-          "awaiting_api"
-        ],
+        "google": [],
         "here": [
           "awaiting_api"
         ],
@@ -1150,7 +1248,13 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"
@@ -1209,7 +1313,12 @@
           "no_stub_placeholder"
         ],
         "google": [
-          "awaiting_api"
+          "uses_google",
+          "loads_config",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "here": [
           "awaiting_api"

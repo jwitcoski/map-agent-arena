@@ -6,12 +6,12 @@
   "notes": "Awaiting API",
   "runEnvironment": {
     "tool": "Cursor",
-    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts — label them as estimates in the UI."
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": null,
-  "modelNote": "Not run yet — awaiting AWS Location credentials + packs",
+  "modelNote": "Not run yet  -  awaiting AWS Location credentials + packs",
   "skillUsed": false,
   "skillPack": null,
   "attempts": 0,

@@ -12,7 +12,7 @@ This project was split out of [witcoskitech / cloud-resume-challenge](https://gi
 
 ```bash
 cp admin-boundaries/js/config.example.js admin-boundaries/js/config.js
-# add MAPBOX_ACCESS_TOKEN and MAPTILER_API_KEY
+# add MAPBOX_ACCESS_TOKEN, MAPTILER_API_KEY, GOOGLE_MAPS_API_KEY
 npx --yes serve .
 ```
 
@@ -22,18 +22,16 @@ Open `http://localhost:3000` (or the port `serve` prints).
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
-Add these two now:
-
 | Secret name | Value |
 |-------------|--------|
 | `MAPBOX_ACCESS_TOKEN` | your Mapbox public token (`pk.…`) |
 | `MAPTILER_API_KEY` | your MapTiler API key |
+| `GOOGLE_MAPS_API_KEY` | your Google Maps Platform key (Maps JS + Geocoding + Directions) |
 
 Optional later (pending seats):
 
 | Secret name |
 |--------------|
-| `GOOGLE_MAPS_API_KEY` |
 | `ARCGIS_API_KEY` |
 | `AZURE_MAPS_SUBSCRIPTION_KEY` |
 | `HERE_API_KEY` |

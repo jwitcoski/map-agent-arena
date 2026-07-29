@@ -631,7 +631,7 @@
  <div class="toolbar">
  <div class="chips" id="chips" role="tablist" aria-label="Categories"></div>
  <div class="view-toggle" role="group" aria-label="Stage fighters">
- <button type="button" id="modeLive" class="on">Live (3)</button>
+ <button type="button" id="modeLive" class="on">Live</button>
  <button type="button" id="modeAll">All 10</button>
  </div>
  <p class="chip-blurb" id="chipBlurb"></p>
@@ -722,6 +722,7 @@
 
  const fighters = fightersDoc.fighters;
  const liveFighters = fighters.filter((f) => f.ready);
+ document.getElementById("modeLive").textContent = "Live (" + liveFighters.length + ")";
  const pendingFighters = fighters.filter((f) => !f.ready);
  const runEnvironment = fightersDoc.runEnvironment || {};
  const categories = categoriesDoc.categories;
