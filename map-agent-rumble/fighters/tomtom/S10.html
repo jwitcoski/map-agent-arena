@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TomTom S10 — awaiting API</title>
-  
+  <title>S10 Cluster - TomTom</title>
+  <link rel="stylesheet" type="text/css" href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css" />
+  <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,26 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>TomTom S10</strong>
-    <p>TomTom seat awaiting TOMTOM_API_KEY and TomTom Maps SDK for Web packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
-</div>
+<div id="map"></div>
+<script>
+
+  const key = window.TOMTOM_API_KEY;
+  tt.setProductInfo("map-agent-arena", "1.0");
+  
+  const map = tt.map({ key, container: "map", center: [14.4, 50.08], zoom: 10 });
+  const features = [];
+  for (let i = 0; i < 800; i++) {
+    features.push({ type: "Feature", properties: { id: i },
+      geometry: { type: "Point", coordinates: [14.2 + Math.random() * 0.5, 49.95 + Math.random() * 0.35] } });
+  }
+  map.on("load", () => {
+    map.addSource("storm", { type: "geojson", data: { type: "FeatureCollection", features }, cluster: true, clusterMaxZoom: 14, clusterRadius: 50 });
+    map.addLayer({ id: "clusters", type: "circle", source: "storm", filter: ["has", "point_count"],
+      paint: { "circle-color": "#fb923c", "circle-radius": 18 } });
+    map.addLayer({ id: "unclustered", type: "circle", source: "storm", filter: ["!", ["has", "point_count"]],
+      paint: { "circle-color": "#f97316", "circle-radius": 4 } });
+  });
+  window.__MAP__ = map;
+</script>
 </body>
 </html>

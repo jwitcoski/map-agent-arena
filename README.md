@@ -12,7 +12,7 @@ This project was split out of [witcoskitech / cloud-resume-challenge](https://gi
 
 ```bash
 cp admin-boundaries/js/config.example.js admin-boundaries/js/config.js
-# add MAPBOX_ACCESS_TOKEN, MAPTILER_API_KEY, GOOGLE_MAPS_API_KEY, AZURE_MAPS_SUBSCRIPTION_KEY
+# add MAPBOX_ACCESS_TOKEN, MAPTILER_API_KEY, GOOGLE_MAPS_API_KEY, AZURE_MAPS_SUBSCRIPTION_KEY, TOMTOM_API_KEY
 npx --yes serve .
 ```
 
@@ -28,6 +28,7 @@ Open `http://localhost:3000` (or the port `serve` prints).
 | `MAPTILER_API_KEY` | your MapTiler API key |
 | `GOOGLE_MAPS_API_KEY` | your Google Maps Platform key (Maps JS + Geocoding + Directions) |
 | `AZURE_MAPS_SUBSCRIPTION_KEY` | Azure Maps primary or secondary shared key |
+| `TOMTOM_API_KEY` | TomTom developer API key |
 
 Optional later (pending seats):
 
@@ -35,7 +36,6 @@ Optional later (pending seats):
 |--------------|
 | `ARCGIS_API_KEY` |
 | `HERE_API_KEY` |
-| `TOMTOM_API_KEY` |
 | `STADIA_API_KEY` |
 | `AWS_LOCATION_API_KEY` |
 

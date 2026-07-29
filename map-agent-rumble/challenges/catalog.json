@@ -9,7 +9,8 @@
     "maptilerSdk": "v4.0.2",
     "maplibreGl": "v4.7.1",
     "googleMapsJs": "weekly",
-    "azureMapsWebSdk": "mapcontrol/3"
+    "azureMapsWebSdk": "mapcontrol/3",
+    "tomtomMapsSdk": "6.25.0"
   },
   "tierWeights": {
     "easy": 1,
@@ -78,7 +79,14 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "tomtom_key_hygiene",
+          "tomtom_key_guard",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -156,7 +164,14 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "tomtom_key_hygiene",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -232,7 +247,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -301,7 +322,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -374,7 +400,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "loads_config",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -448,7 +480,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -521,7 +559,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -597,7 +641,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -670,7 +720,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_terrain_or_honest",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -744,7 +800,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
         ],
         "aws-location": [
           "awaiting_api"
@@ -814,7 +876,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -883,7 +950,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -949,7 +1021,11 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1017,7 +1093,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1102,7 +1183,16 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1170,7 +1260,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1236,7 +1331,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "loads_config",
+          "geocode_forward",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1292,7 +1392,11 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_isochrone",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1358,7 +1462,13 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"
@@ -1428,7 +1538,12 @@
           "awaiting_api"
         ],
         "tomtom": [
-          "awaiting_api"
+          "uses_tomtom",
+          "loads_config",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ],
         "aws-location": [
           "awaiting_api"

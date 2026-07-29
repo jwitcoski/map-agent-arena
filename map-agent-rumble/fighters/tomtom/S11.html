@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TomTom S11 — awaiting API</title>
-  
+  <title>S11 Story Map - TomTom</title>
+  <link rel="stylesheet" type="text/css" href="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps.css" />
+  <script src="https://api.tomtom.com/maps-sdk-for-web/cdn/6.x/6.25.0/maps/maps-web.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,33 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>TomTom S11</strong>
-    <p>TomTom seat awaiting TOMTOM_API_KEY and TomTom Maps SDK for Web packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div id="map"></div>
+<div class="story" id="story">
+  <h3>Prague chapters</h3>
+  <div class="chapter active" data-chapter="0"><strong>Old Town</strong><p>Start at the historic core.</p></div>
+  <div class="chapter" data-chapter="1"><strong>Castle</strong><p>Fly west to the castle ridge.</p></div>
+  <div class="chapter" data-chapter="2"><strong>River bend</strong><p>Follow the Vltava south.</p></div>
 </div>
+<script>
+
+  const key = window.TOMTOM_API_KEY;
+  tt.setProductInfo("map-agent-arena", "1.0");
+  
+  const chapters = [
+    { center: [14.4178, 50.1167], zoom: 13, pitch: 20, bearing: 0 },
+    { center: [14.4005, 50.0865], zoom: 14, pitch: 45, bearing: -30 },
+    { center: [14.414, 50.07], zoom: 13, pitch: 30, bearing: 40 }
+  ];
+  const map = tt.map({ key, container: "map", ...chapters[0] });
+  document.querySelectorAll(".chapter").forEach((el) => {
+    el.addEventListener("click", () => {
+      document.querySelectorAll(".chapter").forEach((c) => c.classList.remove("active"));
+      el.classList.add("active");
+      const i = Number(el.getAttribute("data-chapter"));
+      map.setZoom(chapters[i].zoom); /* chapter camera incomplete */
+    });
+  });
+  window.__MAP__ = map;
+</script>
 </body>
 </html>

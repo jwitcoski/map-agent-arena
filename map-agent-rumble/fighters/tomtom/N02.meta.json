@@ -1,25 +1,26 @@
 {
   "skillId": "N02",
   "fighter": "tomtom",
-  "agentLabel": "TomTom (awaiting API)",
-  "ready": false,
-  "notes": "Awaiting API",
+  "agentLabel": "TomTom skill-agent (imperfect)",
+  "ready": true,
+  "notes": "Skill-agent pack with intentional gaps (not gold)",
   "runEnvironment": {
     "tool": "Cursor",
     "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "provider": "cursor",
   "tool": "Cursor Agent",
-  "model": null,
-  "modelNote": "Not run yet  -  awaiting TomTom API key + packs",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) TomTom Maps SDK packs (imperfect skill-agent)",
   "skillUsed": false,
   "skillPack": null,
-  "attempts": 0,
+  "attempts": 1,
   "tokens": {
-    "input": null,
-    "output": null,
-    "total": null,
-    "estimate": true
+    "input": 8088,
+    "output": 1035,
+    "total": 9123,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": null
+  "latencySec": 11
 }

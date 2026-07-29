@@ -105,6 +105,15 @@
         /(!\s*key|!window\.AZURE|missing|throw)/i.test(src);
       return pts(ok, 10, "azure_key_guard", ok ? "Guard" : "Missing Azure key guard");
     },
+    tomtom_key_hygiene(src) {
+      const hard = /TOMTOM_API_KEY\s*=\s*["'][A-Za-z0-9]{16,}["']/i.test(src);
+      return pts(!hard, 14, "tomtom_key_hygiene", hard ? "Hardcoded TomTom key" : "OK");
+    },
+    tomtom_key_guard(src) {
+      const ok =
+        /TOMTOM_API_KEY/.test(src) && /(!\s*key|!window\.TOMTOM|missing|throw)/i.test(src);
+      return pts(ok, 10, "tomtom_key_guard", ok ? "Guard" : "Missing TomTom key guard");
+    },
     prague_center(src) {
       const ok =
         /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src) ||
@@ -117,7 +126,7 @@
     },
     has_markers(src) {
       const ctor = (
-        src.match(/new\s+(?:mapboxgl|maplibregl|maptilersdk|google\.maps)\.Marker\s*\(/g) || []
+        src.match(/new\s+(?:mapboxgl|maplibregl|maptilersdk|google\.maps|tt)\.Marker\s*\(/g) || []
       ).length;
       const htmlMarkers = (src.match(/new\s+atlas\.HtmlMarker\s*\(/g) || []).length;
       const coords = (src.match(/\[\s*-?\d+\.\d+\s*,\s*-?\d+\.\d+/g) || []).length;
@@ -152,7 +161,7 @@
     },
     geocode_forward(src) {
       const ok =
-        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address/i.test(
+        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address|fuzzySearch|\/search\/2\//i.test(
           src
         );
       return pts(ok, 12, "geocode_forward", ok ? "Forward geocode" : "Forward geocode/search");
@@ -161,13 +170,13 @@
       const omitted = /click reverse omitted|reverse omitted|TODO reverse/i.test(src);
       const ok =
         !omitted &&
-        (/\/reverse\b|reverse\?|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location|search\/address\/reverse/i.test(
+        (/\/reverse\b|reverse\?|reverseGeocode|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location|search\/address\/reverse|\/reverse\/2\//i.test(
           src
         ) ||
           (/map\.on\(\s*['"]click['"]|addListener\(\s*map\s*,\s*['"]click['"]|events\.add\(\s*['"]click['"]/i.test(
             src
           ) &&
-            /geocod|nominatim|Geocoder|search\/address/i.test(src)));
+            /geocod|nominatim|Geocoder|search\/address|\/search\/2\/|\/reverse\/2\/|reverseGeocode/i.test(src)));
       return pts(ok, 12, "geocode_reverse", ok ? "Reverse" : "Reverse geocode on click");
     },
     has_debounce(src) {
@@ -263,7 +272,7 @@
     },
     real_street_route(src) {
       const ok =
-        (/directions\/v5|DirectionsService|route\/directions|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
+        (/directions\/v5|DirectionsService|route\/directions|calculateRoute|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
           src
         ) &&
           !/hand-?drawn rectangle|fake track|toy oval/i.test(src));
@@ -282,7 +291,7 @@
       return pts(ok, 18, "road_constrained", ok ? "On-street only" : "Car must stay on street centerline (no free off-road drive)");
     },
     has_directions(src) {
-      const ok = /directions|routing|osrm|\/route\/v1|route\/directions/i.test(src);
+      const ok = /directions|routing|osrm|\/route\/v1|route\/directions|calculateRoute/i.test(src);
       return pts(ok, 14, "has_directions", ok ? "Directions" : "Directions/routing API");
     },
     has_line_layer(src) {
@@ -290,7 +299,7 @@
       return pts(ok, 10, "has_line_layer", ok ? "Line" : "Draw route line");
     },
     has_isochrone(src) {
-      const ok = /isochrone|reachability|contour|table\/v1/i.test(src);
+      const ok = /isochrone|reachability|reachableRange|calculateReachableRange|contour|table\/v1/i.test(src);
       return pts(ok, 14, "has_isochrone", ok ? "Isochrone" : "Reachability/isochrone");
     },
     has_responsive(src) {
@@ -413,6 +422,8 @@
     google_key_guard: "Missing Google Maps key guard",
     azure_key_hygiene: "No hardcoded Azure Maps subscription key",
     azure_key_guard: "Missing Azure Maps key guard",
+    tomtom_key_hygiene: "No hardcoded TomTom API key",
+    tomtom_key_guard: "Missing TomTom key guard",
     prague_center: "Center Prague [14.4178, 50.1167]",
     full_viewport: "Full-viewport #map",
     has_markers: "Markers / points (≥3 expected in prompt)",
@@ -490,6 +501,8 @@
     google_key_guard: "Missing-key UX for Google Maps Platform.",
     azure_key_hygiene: "Same leak risk for Azure Maps subscription keys.",
     azure_key_guard: "Missing-key UX for Azure Maps Web SDK.",
+    tomtom_key_hygiene: "Same leak risk for TomTom API keys.",
+    tomtom_key_guard: "Missing-key UX for TomTom Maps SDK.",
     prague_center: "Shared geographic fixture — also catches classic [lat,lng] vs [lng,lat] swaps.",
     full_viewport: "A 'hello map' that is a tiny div fails the product brief.",
     has_markers: "Pins & popups is useless without multiple interactive points.",
