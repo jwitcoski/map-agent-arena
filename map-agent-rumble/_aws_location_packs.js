@@ -1,6 +1,8 @@
 /**
  * Amazon Location Service packs (MapLibre GL JS + AWS Maps/Places/Routes v2).
  * Intentionally imperfect (see degradeAwsLocation).
+ * Agent skills: https://github.com/cline/skills/tree/main/skills/amazon-location-service
+ * Install: npx skills add cline/skills --skill amazon-location-service -a cursor
  */
 module.exports = function buildAwsLocationPacks({ shell }) {
   function awsHead() {

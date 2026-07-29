@@ -1,6 +1,7 @@
 /**
  * Stadia Maps packs (MapLibre GL JS + Stadia style/API URLs) for the Royal Rumble.
  * Intentionally imperfect (see degradeStadia).
+ * Agent skills: none-official yet — https://docs.stadiamaps.com/
  */
 module.exports = function buildStadiaPacks({ shell }) {
   function stadiaHead() {

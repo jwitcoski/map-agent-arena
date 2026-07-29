@@ -11,16 +11,18 @@
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": "Composer",
-  "modelNote": "Cursor Agent (Composer) CARTO packs (imperfect skill-agent)",
-  "skillUsed": false,
-  "skillPack": null,
+  "modelNote": "Cursor Agent (Composer) with CARTO agent skills loaded — see https://github.com/CartoDB/agent-skills",
+  "skillUsed": true,
+  "skillPack": "CartoDB/agent-skills → .agents/skills/carto-*",
+  "agentUrl": "https://github.com/CartoDB/agent-skills",
+  "agentInstall": "npx skills add CartoDB/agent-skills -a cursor",
   "attempts": 1,
   "tokens": {
     "input": 8132,
-    "output": 1338,
-    "total": 9470,
+    "output": 1379,
+    "total": 9511,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 11
+  "latencySec": 16
 }

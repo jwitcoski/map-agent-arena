@@ -11,16 +11,18 @@
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": "Composer",
-  "modelNote": "Cursor Agent (Composer) Azure Maps Web SDK packs (imperfect skill-agent)",
-  "skillUsed": false,
-  "skillPack": null,
+  "modelNote": "Cursor Agent (Composer) with Azure Maps agent skills loaded — see https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+  "skillUsed": true,
+  "skillPack": "MicrosoftDocs/Agent-Skills (azure-maps) → .agents/skills/azure-maps",
+  "agentUrl": "https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+  "agentInstall": "npx skills add MicrosoftDocs/Agent-Skills --skill azure-maps -a cursor",
   "attempts": 1,
   "tokens": {
     "input": 8079,
-    "output": 909,
-    "total": 8988,
+    "output": 963,
+    "total": 9042,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 11
+  "latencySec": 15
 }

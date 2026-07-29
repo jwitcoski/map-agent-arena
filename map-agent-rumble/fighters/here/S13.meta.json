@@ -14,6 +14,8 @@
   "modelNote": "Not run yet  -  awaiting HERE API key + packs",
   "skillUsed": false,
   "skillPack": null,
+  "agentUrl": null,
+  "agentInstall": null,
   "attempts": 0,
   "tokens": {
     "input": null,

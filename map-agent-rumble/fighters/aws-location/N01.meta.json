@@ -11,16 +11,18 @@
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": "Composer",
-  "modelNote": "Cursor Agent (Composer) AWS Location packs (imperfect skill-agent)",
-  "skillUsed": false,
-  "skillPack": null,
+  "modelNote": "Cursor Agent (Composer) with AWS Location agent skills loaded — see https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+  "skillUsed": true,
+  "skillPack": "cline/skills (amazon-location-service) → .agents/skills/amazon-location-service",
+  "agentUrl": "https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+  "agentInstall": "npx skills add cline/skills --skill amazon-location-service -a cursor",
   "attempts": 1,
   "tokens": {
     "input": 8125,
-    "output": 1025,
-    "total": 9150,
+    "output": 1081,
+    "total": 9206,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 11
+  "latencySec": 15
 }

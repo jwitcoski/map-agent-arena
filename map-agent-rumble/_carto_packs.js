@@ -1,6 +1,9 @@
 /**
  * CARTO packs (MapLibre GL JS + cartocdn basemaps + LDS API).
  * Intentionally imperfect (see degradeCarto).
+ * Agent skills: https://github.com/CartoDB/agent-skills
+ * Install: npx skills add CartoDB/agent-skills -a cursor
+ * Docs: https://docs.carto.com/carto-for-agents/agent-skills
  */
 module.exports = function buildCartoPacks({ shell }) {
   function cartoHead() {

@@ -47,14 +47,22 @@ const CSS_BASE = `
     }
 `;
 
-function shell(title, extraHead, body) {
+function shell(title, extraHead, body, agentMeta) {
+  const agent = agentMeta || {};
+  const agentComment = agent.url
+    ? `  <!-- Agent skills: ${agent.url} | install: ${agent.install || "see AGENT_WORKFLOW.md"} | local: ${agent.localPath || ".agents/skills"} -->\n`
+    : agent.status === "baseline"
+      ? `  <!-- Agent skills: none (intentional No Agent / OSM baseline) -->\n`
+      : agent.note
+        ? `  <!-- Agent skills: none-official — ${agent.note} -->\n`
+        : "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${title}</title>
-  ${extraHead}
+${agentComment}  ${extraHead}
   <style>${CSS_BASE}</style>
 </head>
 <body>
@@ -2071,6 +2079,23 @@ for (const fighter of FIGHTERS) {
     if (fighter === "stadia") html = degradeStadia(id, html);
     if (fighter === "aws-location") html = degradeAwsLocation(id, html);
     if (fighter === "carto") html = degradeCarto(id, html);
+
+    // Always stamp the official agent skill link into solution HTML.
+    const agent = fighterMeta.agent || {};
+    if (!/<!-- Agent skills:/.test(html)) {
+      let comment;
+      if (agent.url) {
+        comment = `  <!-- Agent skills: ${agent.url} | install: ${agent.install || "see AGENT_WORKFLOW.md"} | local: ${agent.localPath || ".agents/skills"} -->\n`;
+      } else if (agent.status === "baseline") {
+        comment = `  <!-- Agent skills: none (intentional No Agent / OSM baseline) -->\n`;
+      } else if (agent.note) {
+        comment = `  <!-- Agent skills: none-official — ${String(agent.note).replace(/-->/g, "")} -->\n`;
+      } else {
+        comment = `  <!-- Agent skills: not linked yet — see map-agent-rumble/AGENT_WORKFLOW.md -->\n`;
+      }
+      html = html.replace(/(<title>[^<]*<\/title>\n)/, `$1${comment}`);
+    }
+
     fs.writeFileSync(path.join(dir, id + ".html"), html);
 
     const skill = skillsById[id] || { id, prompt: "" };
@@ -2123,6 +2148,8 @@ for (const fighter of FIGHTERS) {
           modelNote: run.modelNote || "",
           skillUsed: Boolean(run.skillUsed),
           skillPack: run.skillPack || null,
+          agentUrl: (fighterMeta.agent && fighterMeta.agent.url) || fighterMeta.agentUrl || null,
+          agentInstall: (fighterMeta.agent && fighterMeta.agent.install) || fighterMeta.agentInstall || null,
           attempts: Number(run.attempts) || 0,
           tokens: awaiting
             ? { input: null, output: null, total: null, estimate: true }

@@ -1,6 +1,8 @@
 /**
  * Azure Maps Web SDK packs for the Royal Rumble.
  * Intentionally imperfect (see degradeAzure) - skill-agent quality, not gold.
+ * Agent skills: https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps
+ * Install: npx skills add MicrosoftDocs/Agent-Skills --skill azure-maps -a cursor
  */
 module.exports = function buildAzurePacks({ shell }) {
   function azureHead() {

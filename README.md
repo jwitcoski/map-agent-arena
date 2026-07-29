@@ -2,11 +2,23 @@
 
 Standalone lab for grading and comparing map-agent skill packs:
 
-- **[Royal Rumble](./map-agent-rumble/)** - top-10 vendor seats, shared skills, static rubrics
+- **[Royal Rumble](./map-agent-rumble/)** - vendor seats, shared skills, static rubrics
 - **[Mapbox Agent Grader](./mapbox-playground/agent-grader.html)** - Mapbox GL JS skill scoreboard
 - **[MapTiler Agent Grader](./maptiler-playground/agent-grader.html)** - MapTiler SDK skill scoreboard
 
 This project was split out of [witcoskitech / cloud-resume-challenge](https://github.com/jwitcoski/cloud-resume-challenge-backend) so agent-eval demos are not on the personal homepage.
+
+## Agent workflow (required per seat)
+
+For every vendor: **find the agent → install it → run it → link it in code**.
+
+See **[map-agent-rumble/AGENT_WORKFLOW.md](./map-agent-rumble/AGENT_WORKFLOW.md)** and run:
+
+```powershell
+./scripts/install-agents.ps1
+```
+
+Installed skills live in `.agents/skills/`. Each solution HTML carries an `<!-- Agent skills: … -->` comment; the rumble UI links the pack repo.
 
 ## Local setup
 

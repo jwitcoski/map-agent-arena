@@ -1,6 +1,7 @@
 /**
  * TomTom Maps SDK for Web (v6 CDN) packs for the Royal Rumble.
  * Intentionally imperfect (see degradeTomtom). Note: Maps SDK Web JS v6 is deprecated (withdraw planned 2026-02).
+ * Agent skills: none-official yet — https://developer.tomtom.com/
  */
 module.exports = function buildTomtomPacks({ shell }) {
   const TT_VER = "6.25.0";

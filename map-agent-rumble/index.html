@@ -690,6 +690,7 @@
  <a href="../mapbox-playground/agent-grader.html">Mapbox playground</a>
  <a href="../maptiler-playground/agent-grader.html">MapTiler playground</a>
  <a href="../">Arena home</a>
+ <a href="https://github.com/jwitcoski/map-agent-arena/blob/main/map-agent-rumble/AGENT_WORKFLOW.md" target="_blank" rel="noopener">Agent workflow (GitHub)</a>
  <a href="https://github.com/jwitcoski/map-agent-arena/blob/main/map-agent-rumble/ADDING_A_FIGHTER.md" target="_blank" rel="noopener">Add a platform (GitHub)</a>
  </div>
  </div>
@@ -962,6 +963,9 @@
  (f.strength ? ` · ${f.strength}` : "") +
  `<div style="margin-top:6px">${f.adapterPrompt || f.skillsetNote || ""}</div>` +
  (f.agentTestFit ? `<div class="fit">${f.agentTestFit}</div>` : "") +
+ (f.agentUrl || (f.agent && f.agent.url)
+ ? `<div class="fit" style="margin-top:6px"><a href="${f.agentUrl || f.agent.url}" target="_blank" rel="noopener">Agent skills</a>${f.agentInstall || (f.agent && f.agent.install) ? ` · <code>${f.agentInstall || f.agent.install}</code>` : ""}</div>`
+ : "") +
  `<div class="fit" style="margin-top:6px">${
  !f.ready
  ? "Status: awaiting API"
@@ -1059,8 +1063,8 @@
  <div>
  <strong style="color:${f.color}">#${f.rank || ""} ${f.label}</strong>
  <div class="cell-sub">${
- f.skillsetUrl
- ? `<a href="${f.skillsetUrl}" target="_blank" rel="noopener">${f.skillsetLabel || "Skillset"}</a>`
+ f.agentUrl || f.skillsetUrl
+ ? `<a href="${f.agentUrl || f.skillsetUrl}" target="_blank" rel="noopener">${f.skillsetLabel || (f.label + " agent")}</a>`
  : (f.strength || f.skillsetNote || "")
  }</div>...</div>
  <div class="grade" id="grade-${f.id}">⬦</div>

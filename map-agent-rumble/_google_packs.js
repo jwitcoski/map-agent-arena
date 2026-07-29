@@ -1,6 +1,8 @@
 /**
  * Google Maps JavaScript API packs for the Royal Rumble.
  * Intentionally imperfect (see degradeGoogle) — skill-agent quality, not gold.
+ * Agent skills: https://github.com/googlemaps/agent-skills
+ * Install: npx skills add googlemaps/agent-skills -a cursor
  */
 module.exports = function buildGooglePacks({ shell }) {
   function googleHead() {

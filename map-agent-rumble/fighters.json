@@ -18,8 +18,8 @@
       "sdkPin": null,
       "configKey": "GOOGLE_MAPS_API_KEY",
       "playgroundUrl": null,
-      "skillsetUrl": null,
-      "skillsetLabel": "Google Maps playground",
+      "skillsetUrl": "https://github.com/googlemaps/agent-skills",
+      "skillsetLabel": "Google agent skills",
       "ready": true,
       "status": "active",
       "checkProfile": "google",
@@ -31,9 +31,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) Google Maps JS packs (imperfect skill-agent)",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with Google agent skills loaded — see https://github.com/googlemaps/agent-skills",
+        "skillUsed": true,
+        "skillPack": "googlemaps/agent-skills → .agents/skills/google-maps-platform",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -42,7 +42,17 @@
         "geocoding": true,
         "terrain": true,
         "isochrone": false
-      }
+      },
+      "agent": {
+        "url": "https://github.com/googlemaps/agent-skills",
+        "docsUrl": "https://github.com/googlemaps/agent-skills#readme",
+        "install": "npx skills add googlemaps/agent-skills -a cursor",
+        "skillPack": "googlemaps/agent-skills → .agents/skills/google-maps-platform",
+        "localPath": ".agents/skills/google-maps-platform",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/googlemaps/agent-skills",
+      "agentInstall": "npx skills add googlemaps/agent-skills -a cursor"
     },
     {
       "id": "mapbox",
@@ -54,8 +64,8 @@
       "sdkPin": "v3.9.0",
       "configKey": "MAPBOX_ACCESS_TOKEN",
       "playgroundUrl": "../mapbox-playground/agent-grader.html",
-      "skillsetUrl": "../mapbox-playground/agent-grader.html",
-      "skillsetLabel": "Current Mapbox skillset",
+      "skillsetUrl": "https://github.com/mapbox/mapbox-agent-skills",
+      "skillsetLabel": "Mapbox agent skills",
       "ready": true,
       "status": "active",
       "checkProfile": "mapbox",
@@ -67,9 +77,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) with Mapbox agent skills loaded",
+        "modelNote": "Cursor Agent (Composer) with Mapbox agent skills loaded — see https://github.com/mapbox/mapbox-agent-skills",
         "skillUsed": true,
-        "skillPack": "mapbox/mapbox-agent-skills (.agents/skills)",
+        "skillPack": "mapbox/mapbox-agent-skills → .agents/skills/mapbox-*",
         "inputBaseTokens": 42000,
         "attempts": 1
       },
@@ -78,7 +88,17 @@
         "geocoding": true,
         "terrain": true,
         "isochrone": true
-      }
+      },
+      "agent": {
+        "url": "https://github.com/mapbox/mapbox-agent-skills",
+        "docsUrl": "https://docs.mapbox.com/api/guides/mapbox-agent-skills/",
+        "install": "npx skills add mapbox/mapbox-agent-skills -a cursor",
+        "skillPack": "mapbox/mapbox-agent-skills → .agents/skills/mapbox-*",
+        "localPath": ".agents/skills/mapbox-web-integration-patterns",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/mapbox/mapbox-agent-skills",
+      "agentInstall": "npx skills add mapbox/mapbox-agent-skills -a cursor"
     },
     {
       "id": "esri",
@@ -114,7 +134,18 @@
         "geocoding": true,
         "terrain": true,
         "isochrone": true
-      }
+      },
+      "agent": {
+        "url": null,
+        "docsUrl": "https://developers.arcgis.com/",
+        "install": null,
+        "skillPack": null,
+        "localPath": null,
+        "status": "pending-key",
+        "note": "Seat awaiting ARCGIS_API_KEY. Search for Esri agent skills before activating."
+      },
+      "agentUrl": null,
+      "agentInstall": null
     },
     {
       "id": "here",
@@ -150,7 +181,18 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": true
-      }
+      },
+      "agent": {
+        "url": null,
+        "docsUrl": "https://www.here.com/docs",
+        "install": null,
+        "skillPack": null,
+        "localPath": null,
+        "status": "pending-key",
+        "note": "Seat awaiting HERE_API_KEY. Search for HERE agent skills before activating."
+      },
+      "agentUrl": null,
+      "agentInstall": null
     },
     {
       "id": "azure",
@@ -162,8 +204,8 @@
       "sdkPin": "mapcontrol/3",
       "configKey": "AZURE_MAPS_SUBSCRIPTION_KEY",
       "playgroundUrl": null,
-      "skillsetUrl": null,
-      "skillsetLabel": "Azure Maps playground",
+      "skillsetUrl": "https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+      "skillsetLabel": "Azure Maps agent skills",
       "ready": true,
       "status": "active",
       "checkProfile": "azure",
@@ -175,9 +217,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) Azure Maps Web SDK packs (imperfect skill-agent)",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with Azure Maps agent skills loaded — see https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+        "skillUsed": true,
+        "skillPack": "MicrosoftDocs/Agent-Skills (azure-maps) → .agents/skills/azure-maps",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -186,7 +228,17 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": false
-      }
+      },
+      "agent": {
+        "url": "https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+        "docsUrl": "https://learn.microsoft.com/azure/azure-maps/",
+        "install": "npx skills add MicrosoftDocs/Agent-Skills --skill azure-maps -a cursor",
+        "skillPack": "MicrosoftDocs/Agent-Skills (azure-maps) → .agents/skills/azure-maps",
+        "localPath": ".agents/skills/azure-maps",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+      "agentInstall": "npx skills add MicrosoftDocs/Agent-Skills --skill azure-maps -a cursor"
     },
     {
       "id": "aws-location",
@@ -198,7 +250,7 @@
       "sdkPin": null,
       "configKey": "AWS_LOCATION_API_KEY",
       "playgroundUrl": null,
-      "skillsetUrl": null,
+      "skillsetUrl": "https://github.com/cline/skills/tree/main/skills/amazon-location-service",
       "skillsetNote": "Amazon Location Service Maps/Places/Routes v2 via MapLibre + API key.",
       "ready": true,
       "status": "active",
@@ -211,9 +263,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) AWS Location packs (imperfect skill-agent)",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with AWS Location agent skills loaded — see https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+        "skillUsed": true,
+        "skillPack": "cline/skills (amazon-location-service) → .agents/skills/amazon-location-service",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -222,7 +274,18 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": false
-      }
+      },
+      "agent": {
+        "url": "https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+        "docsUrl": "https://docs.aws.amazon.com/location/",
+        "install": "npx skills add cline/skills --skill amazon-location-service -a cursor",
+        "skillPack": "cline/skills (amazon-location-service) → .agents/skills/amazon-location-service",
+        "localPath": ".agents/skills/amazon-location-service",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+      "agentInstall": "npx skills add cline/skills --skill amazon-location-service -a cursor",
+      "skillsetLabel": "AWS Location agent skills"
     },
     {
       "id": "tomtom",
@@ -247,7 +310,7 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) TomTom Maps SDK packs (imperfect skill-agent)",
+        "modelNote": "Cursor Agent (Composer) — No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs.",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 8000,
@@ -258,7 +321,18 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": true
-      }
+      },
+      "agent": {
+        "url": null,
+        "docsUrl": "https://developer.tomtom.com/",
+        "install": null,
+        "skillPack": null,
+        "localPath": null,
+        "status": "none-official",
+        "note": "No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs."
+      },
+      "agentUrl": null,
+      "agentInstall": null
     },
     {
       "id": "maptiler",
@@ -270,8 +344,8 @@
       "sdkPin": "v4.0.2",
       "configKey": "MAPTILER_API_KEY",
       "playgroundUrl": "../maptiler-playground/agent-grader.html",
-      "skillsetUrl": "../maptiler-playground/agent-grader.html",
-      "skillsetLabel": "Current MapTiler skillset",
+      "skillsetUrl": "https://github.com/maptiler/maptiler-skills",
+      "skillsetLabel": "MapTiler agent skills",
       "ready": true,
       "status": "active",
       "checkProfile": "maptiler",
@@ -283,9 +357,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) with MapTiler skills loaded",
+        "modelNote": "Cursor Agent (Composer) with MapTiler agent skills loaded — see https://github.com/maptiler/maptiler-skills",
         "skillUsed": true,
-        "skillPack": "maptiler/maptiler-skills",
+        "skillPack": "maptiler/maptiler-skills → .agents/skills/maptiler",
         "inputBaseTokens": 36000,
         "attempts": 1
       },
@@ -294,7 +368,17 @@
         "geocoding": true,
         "terrain": true,
         "isochrone": false
-      }
+      },
+      "agent": {
+        "url": "https://github.com/maptiler/maptiler-skills",
+        "docsUrl": "https://github.com/maptiler/maptiler-skills#readme",
+        "install": "npx skills add maptiler/maptiler-skills -a cursor",
+        "skillPack": "maptiler/maptiler-skills → .agents/skills/maptiler",
+        "localPath": ".agents/skills/maptiler",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/maptiler/maptiler-skills",
+      "agentInstall": "npx skills add maptiler/maptiler-skills -a cursor"
     },
     {
       "id": "stadia",
@@ -319,7 +403,7 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) Stadia Maps packs (imperfect skill-agent)",
+        "modelNote": "Cursor Agent (Composer) — No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs.",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 8000,
@@ -330,7 +414,18 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": false
-      }
+      },
+      "agent": {
+        "url": null,
+        "docsUrl": "https://docs.stadiamaps.com/",
+        "install": null,
+        "skillPack": null,
+        "localPath": null,
+        "status": "none-official",
+        "note": "No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs."
+      },
+      "agentUrl": null,
+      "agentInstall": null
     },
     {
       "id": "no-agent",
@@ -355,7 +450,7 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) with NO map vendor skills  -  open OSM baseline",
+        "modelNote": "Cursor Agent (Composer) with NO map vendor skills — open OSM baseline",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 2800,
@@ -367,7 +462,18 @@
         "terrain": false,
         "isochrone": true,
         "openRouter": true
-      }
+      },
+      "agent": {
+        "url": null,
+        "docsUrl": null,
+        "install": null,
+        "skillPack": null,
+        "localPath": null,
+        "status": "baseline",
+        "note": "Intentional no-vendor-skills baseline (OSM + MapLibre)."
+      },
+      "agentUrl": null,
+      "agentInstall": null
     },
     {
       "id": "carto",
@@ -379,8 +485,8 @@
       "sdkPin": "maplibre 4.7.1",
       "configKey": "CARTO_API_ACCESS_TOKEN",
       "playgroundUrl": null,
-      "skillsetUrl": null,
-      "skillsetLabel": "CARTO developers",
+      "skillsetUrl": "https://github.com/CartoDB/agent-skills",
+      "skillsetLabel": "CARTO agent skills",
       "ready": true,
       "status": "active",
       "checkProfile": "carto",
@@ -392,9 +498,9 @@
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) CARTO packs (imperfect skill-agent)",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with CARTO agent skills loaded — see https://github.com/CartoDB/agent-skills",
+        "skillUsed": true,
+        "skillPack": "CartoDB/agent-skills → .agents/skills/carto-*",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -403,7 +509,17 @@
         "geocoding": true,
         "terrain": false,
         "isochrone": true
-      }
+      },
+      "agent": {
+        "url": "https://github.com/CartoDB/agent-skills",
+        "docsUrl": "https://docs.carto.com/carto-for-agents/agent-skills",
+        "install": "npx skills add CartoDB/agent-skills -a cursor",
+        "skillPack": "CartoDB/agent-skills → .agents/skills/carto-*",
+        "localPath": ".agents/skills/carto-develop-app",
+        "status": "installed"
+      },
+      "agentUrl": "https://github.com/CartoDB/agent-skills",
+      "agentInstall": "npx skills add CartoDB/agent-skills -a cursor"
     }
   ]
 }

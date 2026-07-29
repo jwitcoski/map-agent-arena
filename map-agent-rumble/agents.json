@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "agents": {
+    "google": {
+      "url": "https://github.com/googlemaps/agent-skills",
+      "docsUrl": "https://github.com/googlemaps/agent-skills#readme",
+      "install": "npx skills add googlemaps/agent-skills -a cursor",
+      "skillPack": "googlemaps/agent-skills → .agents/skills/google-maps-platform",
+      "localPath": ".agents/skills/google-maps-platform",
+      "status": "installed"
+    },
+    "mapbox": {
+      "url": "https://github.com/mapbox/mapbox-agent-skills",
+      "docsUrl": "https://docs.mapbox.com/api/guides/mapbox-agent-skills/",
+      "install": "npx skills add mapbox/mapbox-agent-skills -a cursor",
+      "skillPack": "mapbox/mapbox-agent-skills → .agents/skills/mapbox-*",
+      "localPath": ".agents/skills/mapbox-web-integration-patterns",
+      "status": "installed"
+    },
+    "maptiler": {
+      "url": "https://github.com/maptiler/maptiler-skills",
+      "docsUrl": "https://github.com/maptiler/maptiler-skills#readme",
+      "install": "npx skills add maptiler/maptiler-skills -a cursor",
+      "skillPack": "maptiler/maptiler-skills → .agents/skills/maptiler",
+      "localPath": ".agents/skills/maptiler",
+      "status": "installed"
+    },
+    "azure": {
+      "url": "https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps",
+      "docsUrl": "https://learn.microsoft.com/azure/azure-maps/",
+      "install": "npx skills add MicrosoftDocs/Agent-Skills --skill azure-maps -a cursor",
+      "skillPack": "MicrosoftDocs/Agent-Skills (azure-maps) → .agents/skills/azure-maps",
+      "localPath": ".agents/skills/azure-maps",
+      "status": "installed"
+    },
+    "aws-location": {
+      "url": "https://github.com/cline/skills/tree/main/skills/amazon-location-service",
+      "docsUrl": "https://docs.aws.amazon.com/location/",
+      "install": "npx skills add cline/skills --skill amazon-location-service -a cursor",
+      "skillPack": "cline/skills (amazon-location-service) → .agents/skills/amazon-location-service",
+      "localPath": ".agents/skills/amazon-location-service",
+      "status": "installed"
+    },
+    "carto": {
+      "url": "https://github.com/CartoDB/agent-skills",
+      "docsUrl": "https://docs.carto.com/carto-for-agents/agent-skills",
+      "install": "npx skills add CartoDB/agent-skills -a cursor",
+      "skillPack": "CartoDB/agent-skills → .agents/skills/carto-*",
+      "localPath": ".agents/skills/carto-develop-app",
+      "status": "installed"
+    },
+    "tomtom": {
+      "url": null,
+      "docsUrl": "https://developer.tomtom.com/",
+      "install": null,
+      "skillPack": null,
+      "localPath": null,
+      "status": "none-official",
+      "note": "No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs."
+    },
+    "stadia": {
+      "url": null,
+      "docsUrl": "https://docs.stadiamaps.com/",
+      "install": null,
+      "skillPack": null,
+      "localPath": null,
+      "status": "none-official",
+      "note": "No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs."
+    },
+    "esri": {
+      "url": null,
+      "docsUrl": "https://developers.arcgis.com/",
+      "install": null,
+      "skillPack": null,
+      "localPath": null,
+      "status": "pending-key",
+      "note": "Seat awaiting ARCGIS_API_KEY. Search for Esri agent skills before activating."
+    },
+    "here": {
+      "url": null,
+      "docsUrl": "https://www.here.com/docs",
+      "install": null,
+      "skillPack": null,
+      "localPath": null,
+      "status": "pending-key",
+      "note": "Seat awaiting HERE_API_KEY. Search for HERE agent skills before activating."
+    },
+    "no-agent": {
+      "url": null,
+      "docsUrl": null,
+      "install": null,
+      "skillPack": null,
+      "localPath": null,
+      "status": "baseline",
+      "note": "Intentional no-vendor-skills baseline (OSM + MapLibre)."
+    }
+  }
+}
