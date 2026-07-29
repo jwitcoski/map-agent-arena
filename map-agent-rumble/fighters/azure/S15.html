@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Azure Maps S15 — awaiting API</title>
-  
+  <title>S15 On-street Drive - Azure</title>
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,56 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Azure Maps S15</strong>
-    <p>Azure Maps seat awaiting AZURE_MAPS_SUBSCRIPTION_KEY and Azure Maps Web SDK packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Drive</strong>
+  <p>Arrow keys / WASD · follow cam on street route</p>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.AZURE_MAPS_SUBSCRIPTION_KEY;
+  const map = new atlas.Map("map", {
+    center: [14.4178, 50.1167],
+    zoom: 12,
+    authOptions: { authType: "subscriptionKey", subscriptionKey: key }
+    ,zoom: 15, pitch: 45
+  });
+  let path = [], progress = 0, keys = {}, car = null, lineDs = null;
+  map.events.add("ready", async () => {
+    lineDs = new atlas.source.DataSource();
+    map.sources.add(lineDs);
+    map.layers.add(new atlas.layer.LineLayer(lineDs, null, { strokeColor: "#6ec8ff", strokeWidth: 4 }));
+    car = new atlas.HtmlMarker({ position: [14.4178, 50.1167] });
+    map.markers.add(car);
+    const url = "https://atlas.microsoft.com/route/directions/json?api-version=1.0&subscription-key=" +
+      encodeURIComponent(key) +
+      "&query=50.1167,14.4178:50.0865,14.4005";
+    const data = await (await fetch(url)).json();
+    const pts = (((data.routes || [])[0] || {}).legs || []).flatMap((leg) =>
+      (leg.points || []).map((p) => [p.longitude, p.latitude])
+    );
+    if (pts.length > 1) {
+      path = pts;
+      lineDs.add(new atlas.data.Feature(new atlas.data.LineString(path)));
+    }
+    window.addEventListener("keydown", (e) => { keys[e.key.toLowerCase()] = true; });
+    window.addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
+    function tick() {
+      if (path.length > 1) {
+        if (keys["arrowup"] || keys.w) progress = Math.min(1, progress + 0.004);
+        if (keys["arrowdown"] || keys.s) progress = Math.max(0, progress - 0.004);
+        const i = Math.min(path.length - 2, Math.floor(progress * (path.length - 1)));
+        const t = progress * (path.length - 1) - i;
+        const a = path[i], b = path[i + 1];
+        const pos = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+        car.setOptions({ position: pos });
+        map.setCamera({ center: pos });
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

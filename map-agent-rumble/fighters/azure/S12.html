@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Azure Maps S12 — awaiting API</title>
-  
+  <title>S12 Layer Studio - Azure</title>
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,61 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Azure Maps S12</strong>
-    <p>Azure Maps seat awaiting AZURE_MAPS_SUBSCRIPTION_KEY and Azure Maps Web SDK packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Layer studio</strong>
+  <label><input type="checkbox" data-layer="heat" checked /> Heat circles</label>
+  <label><input type="checkbox" data-layer="line" checked /> Corridor</label>
+  <label><input type="checkbox" data-layer="pts" checked /> Sites</label>
+  <label>Opacity <input id="op" type="range" min="0" max="100" value="70" /></label>
+  <label>Filter <input id="filt" type="range" min="0" max="10" value="0" /></label>
+  <div class="legend">Legend: heat · corridor · sites</div>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.AZURE_MAPS_SUBSCRIPTION_KEY;
+  const map = new atlas.Map("map", {
+    center: [14.4178, 50.1167],
+    zoom: 12,
+    authOptions: { authType: "subscriptionKey", subscriptionKey: key }
+    
+  });
+  map.events.add("ready", () => {
+    const heatDs = new atlas.source.DataSource();
+    const lineDs = new atlas.source.DataSource();
+    const ptsDs = new atlas.source.DataSource();
+    map.sources.add([heatDs, lineDs, ptsDs]);
+    heatDs.add([
+      new atlas.data.Feature(new atlas.data.Point([14.42, 50.11]), { r: 600 }),
+      new atlas.data.Feature(new atlas.data.Point([14.40, 50.09]), { r: 500 })
+    ]);
+    lineDs.add(new atlas.data.Feature(new atlas.data.LineString([[14.40, 50.12], [14.43, 50.08]])));
+    ptsDs.add([
+      new atlas.data.Feature(new atlas.data.Point([14.41, 50.10])),
+      new atlas.data.Feature(new atlas.data.Point([14.42, 50.085]))
+    ]);
+    const heat = new atlas.layer.BubbleLayer(heatDs, "heat", { radius: 30, color: "#f87171", opacity: 0.35 });
+    const line = new atlas.layer.LineLayer(lineDs, "line", { strokeColor: "#6ec8ff", strokeWidth: 4 });
+    const pts = new atlas.layer.SymbolLayer(ptsDs, "pts", {});
+    map.layers.add([heat, line, pts]);
+    const layers = { heat, line, pts };
+    document.querySelectorAll("[data-layer]").forEach((el) => {
+      el.addEventListener("change", () => {
+        layers[el.getAttribute("data-layer")].setOptions({ visible: el.checked });
+      });
+    });
+    document.getElementById("op").oninput = (e) => {
+      const o = Number(e.target.value) / 100;
+      heat.setOptions({ opacity: o * 0.5 });
+      line.setOptions({ strokeOpacity: o });
+    };
+    
+      ptsDs.clear();
+      if (n < 1) ptsDs.add(new atlas.data.Feature(new atlas.data.Point([14.41, 50.10])));
+      if (n < 2) ptsDs.add(new atlas.data.Feature(new atlas.data.Point([14.42, 50.085])));
+    };
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

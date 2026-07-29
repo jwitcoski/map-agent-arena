@@ -1,25 +1,26 @@
 {
   "skillId": "S01",
   "fighter": "azure",
-  "agentLabel": "Azure Maps (awaiting API)",
-  "ready": false,
-  "notes": "Awaiting API",
+  "agentLabel": "Azure skill-agent (imperfect)",
+  "ready": true,
+  "notes": "Skill-agent pack with intentional gaps (not gold)",
   "runEnvironment": {
     "tool": "Cursor",
     "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "provider": "cursor",
   "tool": "Cursor Agent",
-  "model": null,
-  "modelNote": "Not run yet  -  awaiting Azure Maps key + packs",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) Azure Maps Web SDK packs (imperfect skill-agent)",
   "skillUsed": false,
   "skillPack": null,
-  "attempts": 0,
+  "attempts": 1,
   "tokens": {
-    "input": null,
-    "output": null,
-    "total": null,
-    "estimate": true
+    "input": 8087,
+    "output": 713,
+    "total": 8800,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": null
+  "latencySec": 11
 }

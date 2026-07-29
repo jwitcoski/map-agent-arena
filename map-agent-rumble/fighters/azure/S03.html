@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Azure Maps S03 — awaiting API</title>
-  
+  <title>S03 Style Switcher - Azure</title>
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,29 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Azure Maps S03</strong>
-    <p>Azure Maps seat awaiting AZURE_MAPS_SUBSCRIPTION_KEY and Azure Maps Web SDK packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Styles</strong>
+  <button type="button" data-style="road">Road</button>
+  <button type="button" data-style="satellite">Satellite</button>
+  <button type="button" data-style="grayscale_dark">Gray dark</button>
+  <button type="button" data-style="night">Night</button>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.AZURE_MAPS_SUBSCRIPTION_KEY;
+  const map = new atlas.Map("map", {
+    center: [14.4178, 50.1167],
+    zoom: 12,
+    authOptions: { authType: "subscriptionKey", subscriptionKey: key }
+    ,style: "road"
+  });
+  map.events.add("ready", () => {
+    document.querySelectorAll("[data-style]").forEach((btn) => {
+      btn.addEventListener("click", () => map.setStyle({ style: btn.getAttribute("data-style") }));
+    });
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

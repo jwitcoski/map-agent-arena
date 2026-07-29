@@ -1778,12 +1778,14 @@ noAgent.M02 = () => naShell("M02", `
 </script>`);
 
 const { google, degradeGoogle } = require("./_google_packs.js")({ shell });
+const { azure, degradeAzure } = require("./_azure_packs.js")({ shell });
 
 const packs = {
   mapbox,
   maptiler,
   "no-agent": noAgent,
   google,
+  azure,
   esri: Object.fromEntries(SKILLS.map((id) => [id, () => esriPlaceholder(id, id)])),
 };
 
@@ -2056,6 +2058,7 @@ for (const fighter of FIGHTERS) {
     if (fighter === "mapbox") html = degradeMapbox(id, html);
     if (fighter === "maptiler") html = degradeMaptiler(id, html);
     if (fighter === "google") html = degradeGoogle(id, html);
+    if (fighter === "azure") html = degradeAzure(id, html);
     fs.writeFileSync(path.join(dir, id + ".html"), html);
 
     const skill = skillsById[id] || { id, prompt: "" };
@@ -2079,6 +2082,8 @@ for (const fighter of FIGHTERS) {
                   ? "MapTiler skill-agent (imperfect)"
                   : fighter === "google"
                     ? "Google skill-agent (imperfect)"
+                  : fighter === "azure"
+                    ? "Azure skill-agent (imperfect)"
                   : fighterMeta.label || fighter,
           ready: !awaiting,
           notes: awaiting

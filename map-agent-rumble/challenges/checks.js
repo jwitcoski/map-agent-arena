@@ -94,6 +94,17 @@
         /GOOGLE_MAPS_API_KEY/.test(src) && /(!\s*key|!window\.GOOGLE|missing|throw)/i.test(src);
       return pts(ok, 10, "google_key_guard", ok ? "Guard" : "Missing Google key guard");
     },
+    azure_key_hygiene(src) {
+      const hard =
+        /AZURE_MAPS_SUBSCRIPTION_KEY\s*=\s*["'][A-Za-z0-9_\-+/=]{20,}["']/i.test(src);
+      return pts(!hard, 14, "azure_key_hygiene", hard ? "Hardcoded Azure key" : "OK");
+    },
+    azure_key_guard(src) {
+      const ok =
+        /AZURE_MAPS_SUBSCRIPTION_KEY/.test(src) &&
+        /(!\s*key|!window\.AZURE|missing|throw)/i.test(src);
+      return pts(ok, 10, "azure_key_guard", ok ? "Guard" : "Missing Azure key guard");
+    },
     prague_center(src) {
       const ok =
         /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src) ||
@@ -108,18 +119,19 @@
       const ctor = (
         src.match(/new\s+(?:mapboxgl|maplibregl|maptilersdk|google\.maps)\.Marker\s*\(/g) || []
       ).length;
+      const htmlMarkers = (src.match(/new\s+atlas\.HtmlMarker\s*\(/g) || []).length;
       const coords = (src.match(/\[\s*-?\d+\.\d+\s*,\s*-?\d+\.\d+/g) || []).length;
       const gLatLng = (src.match(/lat\s*:\s*-?\d+\.\d+[\s\S]{0,40}lng\s*:\s*-?\d+\.\d+/g) || []).length;
       const looped =
         /\.forEach/.test(src) &&
-        /Marker/.test(src) &&
+        /Marker|HtmlMarker/.test(src) &&
         !/Only one/.test(src) &&
         (coords >= 3 || gLatLng >= 3);
-      const ok = ctor >= 3 || looped;
-      return pts(ok, 12, "has_markers", ok ? `Markers (ctors=${ctor}, coords=${coords})` : "Need >=3 markers/points");
+      const ok = ctor >= 3 || htmlMarkers >= 3 || looped;
+      return pts(ok, 12, "has_markers", ok ? `Markers (ctors=${ctor + htmlMarkers}, coords=${coords})` : "Need >=3 markers/points");
     },
     has_popup(src) {
-      const ok = /Popup|popup|setPopup|infoWindow|InfoWindow|bindPopup/i.test(src);
+      const ok = /Popup|popup|setPopup|infoWindow|InfoWindow|bindPopup|atlas\.Popup/i.test(src);
       return pts(ok, 10, "has_popup", ok ? "Popup" : "Need popups/info UI");
     },
     style_switcher(src) {
@@ -131,24 +143,31 @@
       return pts(ok, 12, "style_switcher", ok ? `>=3 styles (${unique.size || mapStyles || mapTypes})` : "Need >=3 distinct style controls");
     },
     set_style(src) {
-      const ok = /setStyle|setMapTypeId|mapTypeId|style\s*=/i.test(src);
+      const ok = /setStyle|setMapTypeId|mapTypeId|style\s*=|map\.setStyle/i.test(src);
       return pts(ok, 8, "set_style", ok ? "setStyle/mapType" : "Call setStyle / setMapTypeId");
     },
     has_atmosphere(src) {
-      const ok = /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType/i.test(src);
+      const ok = /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType|grayscale_dark|night/i.test(src);
       return pts(ok, 14, "has_atmosphere", ok ? "Atmosphere" : "Fog/lights/globe mood");
     },
     geocode_forward(src) {
-      const ok = /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService/i.test(src);
+      const ok =
+        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address/i.test(
+          src
+        );
       return pts(ok, 12, "geocode_forward", ok ? "Forward geocode" : "Forward geocode/search");
     },
     geocode_reverse(src) {
       const omitted = /click reverse omitted|reverse omitted|TODO reverse/i.test(src);
       const ok =
         !omitted &&
-        (/\/reverse\b|reverse\?|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location/i.test(src) ||
-          (/map\.on\(\s*['"]click['"]|addListener\(\s*map\s*,\s*['"]click['"]/i.test(src) &&
-            /geocod|nominatim|Geocoder/i.test(src)));
+        (/\/reverse\b|reverse\?|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location|search\/address\/reverse/i.test(
+          src
+        ) ||
+          (/map\.on\(\s*['"]click['"]|addListener\(\s*map\s*,\s*['"]click['"]|events\.add\(\s*['"]click['"]/i.test(
+            src
+          ) &&
+            /geocod|nominatim|Geocoder|search\/address/i.test(src)));
       return pts(ok, 12, "geocode_reverse", ok ? "Reverse" : "Reverse geocode on click");
     },
     has_debounce(src) {
@@ -156,8 +175,8 @@
       return pts(ok, 8, "has_debounce", ok ? "Debounce" : "Debounce search input");
     },
     has_flyto(src) {
-      const ok = /flyTo|easeTo|goTo|setView|animateTo|panTo|panBy/i.test(src);
-      return pts(ok, 12, "has_flyto", ok ? "Camera move" : "flyTo/easeTo/panTo sequence");
+      const ok = /flyTo|easeTo|goTo|setView|animateTo|panTo|panBy|setCamera/i.test(src);
+      return pts(ok, 12, "has_flyto", ok ? "Camera move" : "flyTo/easeTo/panTo/setCamera sequence");
     },
     has_pitch_or_bearing(src) {
       const ok = /pitch|bearing|setTilt|setHeading|tilt|heading/i.test(src);
@@ -187,7 +206,10 @@
       return pts(ok, 12, "has_terrain_or_honest", ok ? "Terrain or honest fallback" : "Terrain or documented fallback");
     },
     has_cluster(src) {
-      const ok = /cluster\s*:\s*true|clustered|supercluster|clusterMaxZoom|MarkerClusterer/i.test(src);
+      const ok =
+        /cluster\s*:\s*true|clustered|supercluster|clusterMaxZoom|MarkerClusterer|clusterRadius|BubbleLayer/i.test(
+          src
+        );
       return pts(ok, 14, "has_cluster", ok ? "Cluster" : "Enable clustering");
     },
     has_story_chapters(src) {
@@ -208,7 +230,7 @@
       const ui = /swipe|compare|clip-path|splitter|map-compare/i.test(src);
       // Swipe compare must keep maps geographically synced while dragging/panning
       const synced =
-        /function\s+bind\s*\([^)]*\)\s*\{[\s\S]{0,400}(jumpTo|setCenter|setZoom|easeTo)/i.test(src) &&
+        /function\s+bind\s*\([^)]*\)\s*\{[\s\S]{0,500}(jumpTo|setCenter|setZoom|easeTo|setCamera)/i.test(src) &&
         !/maps not synced/i.test(src);
       const ok = ui && synced;
       return pts(ok, 14, "has_swipe", ok ? "Swipe + sync" : ui ? "Swipe UI but maps not synced" : "Swipe/compare control");
@@ -232,16 +254,16 @@
       return pts(ok, 12, "has_game_controls", ok ? "Controls" : "Keyboard/pointer controls");
     },
     has_follow_cam(src) {
-      const ok = /follow|setCenter|easeTo|jumpTo|panTo|camera.*car|car.*camera/i.test(src);
+      const ok = /follow|setCenter|easeTo|jumpTo|panTo|setCamera|camera.*car|car.*camera/i.test(src);
       return pts(ok, 10, "has_follow_cam", ok ? "Follow cam" : "Camera follows vehicle");
     },
     has_track(src) {
-      const ok = /track|LineString|race|street|route\.geometry|overview_path|Polyline/i.test(src);
+      const ok = /track|LineString|race|street|route\.geometry|overview_path|Polyline|LineLayer/i.test(src);
       return pts(ok, 10, "has_track", ok ? "Track layer" : "Visible street/track LineString");
     },
     real_street_route(src) {
       const ok =
-        (/directions\/v5|DirectionsService|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
+        (/directions\/v5|DirectionsService|route\/directions|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
           src
         ) &&
           !/hand-?drawn rectangle|fake track|toy oval/i.test(src));
@@ -260,11 +282,11 @@
       return pts(ok, 18, "road_constrained", ok ? "On-street only" : "Car must stay on street centerline (no free off-road drive)");
     },
     has_directions(src) {
-      const ok = /directions|routing|osrm|\/route\/v1/i.test(src);
+      const ok = /directions|routing|osrm|\/route\/v1|route\/directions/i.test(src);
       return pts(ok, 14, "has_directions", ok ? "Directions" : "Directions/routing API");
     },
     has_line_layer(src) {
-      const ok = /line|LineString|addLayer.*line|Polyline|polyline/i.test(src);
+      const ok = /line|LineString|addLayer.*line|Polyline|polyline|LineLayer/i.test(src);
       return pts(ok, 10, "has_line_layer", ok ? "Line" : "Draw route line");
     },
     has_isochrone(src) {
@@ -280,7 +302,7 @@
       return pts(ok, 8, "has_touch_friendly", ok ? "Touch UI" : "Touch-friendly controls");
     },
     has_geolocation(src) {
-      const ok = /geolocation|getCurrentPosition|GeolocateControl|locate/i.test(src);
+      const ok = /geolocation|getCurrentPosition|GeolocateControl|locate|atlas\.control\.GeolocationControl/i.test(src);
       return pts(ok, 14, "has_geolocation", ok ? "Geolocation" : "Locate me / geolocation");
     },
     no_stub_placeholder(src) {
@@ -323,7 +345,7 @@
       return pts(ok, 12, "uses_bing", ok ? "Azure/Bing Maps" : "Use Azure Maps or Bing Maps Web SDK");
     },
     uses_azure(src) {
-      const ok = /atlas\.microsoft\.com|azure-maps|AzureMaps|Microsoft\.Maps/i.test(src);
+      const ok = /atlas\.microsoft\.com|azure-maps|new\s+atlas\.Map|atlas\.Map\s*\(/i.test(src);
       return pts(ok, 12, "uses_azure", ok ? "Azure Maps" : "Use Azure Maps Web SDK");
     },
     uses_stadia(src) {
@@ -389,6 +411,8 @@
     key_guard: "Missing-key guard",
     google_key_hygiene: "No hardcoded Google Maps key",
     google_key_guard: "Missing Google Maps key guard",
+    azure_key_hygiene: "No hardcoded Azure Maps subscription key",
+    azure_key_guard: "Missing Azure Maps key guard",
     prague_center: "Center Prague [14.4178, 50.1167]",
     full_viewport: "Full-viewport #map",
     has_markers: "Markers / points (≥3 expected in prompt)",
@@ -464,6 +488,8 @@
     key_guard: "Same for MapTiler API key.",
     google_key_hygiene: "Same leak risk for Google Maps API keys.",
     google_key_guard: "Missing-key UX for Google Maps Platform.",
+    azure_key_hygiene: "Same leak risk for Azure Maps subscription keys.",
+    azure_key_guard: "Missing-key UX for Azure Maps Web SDK.",
     prague_center: "Shared geographic fixture — also catches classic [lat,lng] vs [lng,lat] swaps.",
     full_viewport: "A 'hello map' that is a tiny div fails the product brief.",
     has_markers: "Pins & popups is useless without multiple interactive points.",

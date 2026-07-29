@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Azure Maps N02 — awaiting API</title>
-  
+  <title>N02 Geocode + Route - Azure</title>
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,47 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Azure Maps N02</strong>
-    <p>Azure Maps seat awaiting AZURE_MAPS_SUBSCRIPTION_KEY and Azure Maps Web SDK packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <input id="from" placeholder="From" value="Old Town Square, Prague" />
+  <input id="to" placeholder="To" value="Prague Castle" />
+  <button type="button" id="go">Route</button>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.AZURE_MAPS_SUBSCRIPTION_KEY;
+  const map = new atlas.Map("map", {
+    center: [14.4178, 50.1167],
+    zoom: 12,
+    authOptions: { authType: "subscriptionKey", subscriptionKey: key }
+    
+  });
+  async function geocode(q) {
+    const url = "https://atlas.microsoft.com/search/address/json?api-version=1.0&subscription-key=" +
+      encodeURIComponent(key) + "&query=" + encodeURIComponent(q) + "&limit=1";
+    const data = await (await fetch(url)).json();
+    const r = data.results && data.results[0];
+    if (!r) throw new Error("geocode miss");
+    return { lat: r.position.lat, lon: r.position.lon };
+  }
+  map.events.add("ready", () => {
+    const ds = new atlas.source.DataSource();
+    map.sources.add(ds);
+    map.layers.add(new atlas.layer.LineLayer(ds, null, { strokeWidth: 5, strokeColor: "#60a5fa" }));
+    document.getElementById("go").onclick = async () => {
+      const a = await geocode(document.getElementById("from").value);
+      const b = await geocode(document.getElementById("to").value);
+      const url = "https://atlas.microsoft.com/route/directions/json?api-version=1.0&subscription-key=" +
+        encodeURIComponent(key) + "&query=" + a.lat + "," + a.lon + ":" + b.lat + "," + b.lon;
+      const data = await (await fetch(url)).json();
+      const pts = (((data.routes || [])[0] || {}).legs || []).flatMap((leg) =>
+        (leg.points || []).map((p) => [p.longitude, p.latitude])
+      );
+      ds.clear();
+      if (pts.length > 1) ds.add(new atlas.data.Feature(new atlas.data.LineString(pts)));
+    };
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>

@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Azure Maps S05 — awaiting API</title>
-  
+  <title>S05 Geocode - Azure</title>
+  <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+  <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,48 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Azure Maps S05</strong>
-    <p>Azure Maps seat awaiting AZURE_MAPS_SUBSCRIPTION_KEY and Azure Maps Web SDK packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Geocode</strong>
+  <input id="q" type="search" placeholder="Search address" />
+  <div id="out"></div>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.AZURE_MAPS_SUBSCRIPTION_KEY;
+  const map = new atlas.Map("map", {
+    center: [14.4178, 50.1167],
+    zoom: 12,
+    authOptions: { authType: "subscriptionKey", subscriptionKey: key }
+    
+  });
+  let marker = null;
+  let t = null;
+  function debounce(fn, ms) { return fn; }
+  }
+  async function forward(q) {
+    const url = "https://atlas.microsoft.com/search/address/json?api-version=1.0&subscription-key=" +
+      encodeURIComponent(key) + "&query=" + encodeURIComponent(q) + "&limit=1";
+    const data = await (await fetch(url)).json();
+    const r = data.results && data.results[0];
+    if (!r) return;
+    const pos = [r.position.lon, r.position.lat];
+    if (marker) map.markers.remove(marker);
+    marker = new atlas.HtmlMarker({ position: pos });
+    map.markers.add(marker);
+    map.setCamera({ center: pos, zoom: 14, type: "ease" });
+    document.getElementById("out").textContent = r.address.freeformAddress;
+  }
+  map.events.add("ready", () => {
+    document.getElementById("q").addEventListener("input", debounce((e) => {
+      const q = e.target.value.trim();
+      if (q.length > 2) forward(q);
+    }, 350));
+    /* click reverse omitted */
+      map.markers.add(marker);
+    });
+    window.__MAP__ = map;
+  });
+</script>
 </body>
 </html>
