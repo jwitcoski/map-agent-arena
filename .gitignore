@@ -1,5 +1,7 @@
-# Local API keys — never commit
+# Local API keys — never commit (written by Pages workflow at deploy time)
 admin-boundaries/js/config.js
+map-agent-rumble/admin-boundaries/js/config.js
+mapbox-playground/admin-boundaries/js/config.js
 .DS_Store
 Thumbs.db
 *.log

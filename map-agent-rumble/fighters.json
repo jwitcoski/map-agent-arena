@@ -297,22 +297,22 @@
       "sdkPin": "6.25.0",
       "configKey": "TOMTOM_API_KEY",
       "playgroundUrl": null,
-      "skillsetUrl": null,
-      "skillsetLabel": "TomTom Maps playground",
+      "skillsetUrl": "https://github.com/tomtom-international/maps-sdk-js",
+      "skillsetLabel": "TomTom Maps SDK for JS",
       "ready": true,
       "status": "active",
       "checkProfile": "tomtom",
       "strength": "Navigation, traffic, truck routing",
       "apis": "Maps, Search, Routing, Traffic, Truck",
       "agentTestFit": "Competitive pricing; strong traffic and truck routing; good for testing real-time navigation and logistics-focused agents.",
-      "adapterPrompt": "Implement with TomTom Maps SDK for Web v6.25.0 CDN (tt.map). Load window.TOMTOM_API_KEY from admin-boundaries/js/config.js. Guard missing keys. Prefer Search/Routing REST (calculateRoute, calculateReachableRange). Note: Maps SDK Web JS v6 is deprecated with withdraw planned Feb 2026.",
+      "adapterPrompt": "Implement with TomTom Maps SDK for Web v6.25.0 CDN (tt.map) guided by https://github.com/tomtom-international/maps-sdk-js. Load window.TOMTOM_API_KEY from admin-boundaries/js/config.js. Guard missing keys. Prefer Search/Routing REST (calculateRoute, calculateReachableRange). Note: Maps SDK Web JS v6 is deprecated with withdraw planned Feb 2026.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) — No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs.",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with TomTom Maps SDK for JS — https://github.com/tomtom-international/maps-sdk-js",
+        "skillUsed": true,
+        "skillPack": "tomtom-international/maps-sdk-js",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -323,16 +323,16 @@
         "isochrone": true
       },
       "agent": {
-        "url": null,
-        "docsUrl": "https://developer.tomtom.com/",
-        "install": null,
-        "skillPack": null,
+        "url": "https://github.com/tomtom-international/maps-sdk-js",
+        "docsUrl": "https://developer.tomtom.com/maps/web/guides/map/map",
+        "install": "npm i @tomtom-international/web-sdk-maps (CDN: Maps SDK for Web v6)",
+        "skillPack": "tomtom-international/maps-sdk-js (Maps SDK — no Agent Skills pack yet)",
         "localPath": null,
-        "status": "none-official",
-        "note": "No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs."
+        "status": "sdk",
+        "note": "Official Maps SDK for JS/TS. No Agent Skills pack yet — Cursor Agent authors packs against this SDK + TomTom REST APIs."
       },
-      "agentUrl": null,
-      "agentInstall": null
+      "agentUrl": "https://github.com/tomtom-international/maps-sdk-js",
+      "agentInstall": "npm i @tomtom-international/web-sdk-maps (CDN: Maps SDK for Web v6)"
     },
     {
       "id": "maptiler",
@@ -390,22 +390,22 @@
       "sdkPin": "maplibre 4.7.1",
       "configKey": "STADIA_API_KEY",
       "playgroundUrl": null,
-      "skillsetUrl": null,
-      "skillsetLabel": "Stadia Maps playground",
+      "skillsetUrl": "https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
+      "skillsetLabel": "Stadia Maps MCP server",
       "ready": true,
       "status": "active",
       "checkProfile": "stadia",
       "strength": "Cost-effective OSM tiles",
       "apis": "Static Maps, Tiles, Geocoding, Routing",
       "agentTestFit": "Very affordable; OSM-based; good for testing budget-constrained agents and high-volume tile serving.",
-      "adapterPrompt": "Implement with MapLibre GL JS v4.7.1 + Stadia style URLs (tiles.stadiamaps.com/styles/...json?api_key=). Load window.STADIA_API_KEY from admin-boundaries/js/config.js. Guard missing keys. Prefer Stadia geocoding + Valhalla route APIs.",
+      "adapterPrompt": "Implement with MapLibre GL JS v4.7.1 + Stadia style URLs guided by https://github.com/stadiamaps/stadiamaps-mcp-server-ts (MCP: geocoding, routing, isochrones, static maps). Load window.STADIA_API_KEY from admin-boundaries/js/config.js. Guard missing keys. Prefer Stadia geocoding + Valhalla route APIs.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) — No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs.",
-        "skillUsed": false,
-        "skillPack": null,
+        "modelNote": "Cursor Agent (Composer) with Stadia Maps MCP — https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
+        "skillUsed": true,
+        "skillPack": "stadiamaps/stadiamaps-mcp-server-ts",
         "inputBaseTokens": 8000,
         "attempts": 1
       },
@@ -416,16 +416,16 @@
         "isochrone": false
       },
       "agent": {
-        "url": null,
+        "url": "https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
         "docsUrl": "https://docs.stadiamaps.com/",
-        "install": null,
-        "skillPack": null,
+        "install": "git clone https://github.com/stadiamaps/stadiamaps-mcp-server-ts && bun install && bun run build (MCP: set API_KEY)",
+        "skillPack": "stadiamaps/stadiamaps-mcp-server-ts (MCP server)",
         "localPath": null,
-        "status": "none-official",
-        "note": "No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs."
+        "status": "mcp",
+        "note": "Official Stadia Maps MCP server. No Cursor Agent Skills pack — use MCP + MapLibre for packs."
       },
-      "agentUrl": null,
-      "agentInstall": null
+      "agentUrl": "https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
+      "agentInstall": "git clone https://github.com/stadiamaps/stadiamaps-mcp-server-ts && bun install && bun run build (MCP: set API_KEY)"
     },
     {
       "id": "no-agent",

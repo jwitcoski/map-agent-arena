@@ -11,18 +11,18 @@
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": "Composer",
-  "modelNote": "Cursor Agent (Composer) — No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs.",
-  "skillUsed": false,
-  "skillPack": null,
-  "agentUrl": null,
-  "agentInstall": null,
+  "modelNote": "Cursor Agent (Composer) with Stadia Maps MCP — https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
+  "skillUsed": true,
+  "skillPack": "stadiamaps/stadiamaps-mcp-server-ts",
+  "agentUrl": "https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
+  "agentInstall": "git clone https://github.com/stadiamaps/stadiamaps-mcp-server-ts && bun install && bun run build (MCP: set API_KEY)",
   "attempts": 1,
   "tokens": {
-    "input": 8083,
-    "output": 1110,
-    "total": 9193,
+    "input": 8100,
+    "output": 1132,
+    "total": 9232,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 11
+  "latencySec": 15
 }

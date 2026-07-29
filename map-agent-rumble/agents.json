@@ -50,22 +50,22 @@
       "status": "installed"
     },
     "tomtom": {
-      "url": null,
-      "docsUrl": "https://developer.tomtom.com/",
-      "install": null,
-      "skillPack": null,
+      "url": "https://github.com/tomtom-international/maps-sdk-js",
+      "docsUrl": "https://developer.tomtom.com/maps/web/guides/map/map",
+      "install": "npm i @tomtom-international/web-sdk-maps (CDN: Maps SDK for Web v6)",
+      "skillPack": "tomtom-international/maps-sdk-js (Maps SDK — no Agent Skills pack yet)",
       "localPath": null,
-      "status": "none-official",
-      "note": "No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs."
+      "status": "sdk",
+      "note": "Official Maps SDK for JS/TS. No Agent Skills pack yet — Cursor Agent authors packs against this SDK + TomTom REST APIs."
     },
     "stadia": {
-      "url": null,
+      "url": "https://github.com/stadiamaps/stadiamaps-mcp-server-ts",
       "docsUrl": "https://docs.stadiamaps.com/",
-      "install": null,
-      "skillPack": null,
+      "install": "git clone https://github.com/stadiamaps/stadiamaps-mcp-server-ts && bun install && bun run build (MCP: set API_KEY)",
+      "skillPack": "stadiamaps/stadiamaps-mcp-server-ts (MCP server)",
       "localPath": null,
-      "status": "none-official",
-      "note": "No public Stadia Agent Skills pack found yet — packs authored with Cursor Agent + Stadia/MapLibre docs."
+      "status": "mcp",
+      "note": "Official Stadia Maps MCP server (geocoding, routing, isochrones, static maps). No Cursor Agent Skills pack — use MCP + MapLibre for packs."
     },
     "esri": {
       "url": null,

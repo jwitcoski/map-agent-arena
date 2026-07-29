@@ -1,7 +1,7 @@
 /**
  * Stadia Maps packs (MapLibre GL JS + Stadia style/API URLs) for the Royal Rumble.
  * Intentionally imperfect (see degradeStadia).
- * Agent skills: none-official yet — https://docs.stadiamaps.com/
+ * Agent / MCP: https://github.com/stadiamaps/stadiamaps-mcp-server-ts | install: bun install && bun run build (API_KEY)
  */
 module.exports = function buildStadiaPacks({ shell }) {
   function stadiaHead() {

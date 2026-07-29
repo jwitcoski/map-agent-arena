@@ -11,18 +11,18 @@
   "provider": "cursor",
   "tool": "Cursor Agent",
   "model": "Composer",
-  "modelNote": "Cursor Agent (Composer) — No public TomTom Agent Skills pack found yet — packs authored with Cursor Agent + TomTom Maps SDK docs.",
-  "skillUsed": false,
-  "skillPack": null,
-  "agentUrl": null,
-  "agentInstall": null,
+  "modelNote": "Cursor Agent (Composer) with TomTom Maps SDK for JS — https://github.com/tomtom-international/maps-sdk-js",
+  "skillUsed": true,
+  "skillPack": "tomtom-international/maps-sdk-js",
+  "agentUrl": "https://github.com/tomtom-international/maps-sdk-js",
+  "agentInstall": "npm i @tomtom-international/web-sdk-maps (CDN: Maps SDK for Web v6)",
   "attempts": 1,
   "tokens": {
-    "input": 8089,
-    "output": 897,
-    "total": 8986,
+    "input": 8105,
+    "output": 905,
+    "total": 9010,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 11
+  "latencySec": 15
 }

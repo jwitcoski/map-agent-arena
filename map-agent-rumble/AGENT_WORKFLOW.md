@@ -14,7 +14,9 @@ Search for the vendor’s **Agent Skills** (or MCP) pack:
 | Azure Maps | [MicrosoftDocs/Agent-Skills → azure-maps](https://github.com/MicrosoftDocs/Agent-Skills/tree/main/skills/azure-maps) |
 | AWS Location | [cline/skills → amazon-location-service](https://github.com/cline/skills/tree/main/skills/amazon-location-service) |
 | CARTO | [CartoDB/agent-skills](https://github.com/CartoDB/agent-skills) · [docs](https://docs.carto.com/carto-for-agents/agent-skills) |
-| TomTom / Stadia / Esri / HERE | No public Agent Skills pack found yet — document `agent.status: none-official` and use vendor docs until one ships |
+| TomTom | [tomtom-international/maps-sdk-js](https://github.com/tomtom-international/maps-sdk-js) (Maps SDK — no Agent Skills pack yet; status `sdk`) |
+| Stadia | [stadiamaps/stadiamaps-mcp-server-ts](https://github.com/stadiamaps/stadiamaps-mcp-server-ts) (MCP server; status `mcp`) |
+| Esri / HERE | Pending API keys — search for agent skills before activating |
 
 Canonical registry copy: [`agents.json`](./agents.json) + each fighter’s `agent` object in [`fighters.json`](./fighters.json).
 
