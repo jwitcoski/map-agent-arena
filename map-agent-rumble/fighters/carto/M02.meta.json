@@ -1,0 +1,26 @@
+{
+  "skillId": "M02",
+  "fighter": "carto",
+  "agentLabel": "CARTO skill-agent (imperfect)",
+  "ready": true,
+  "notes": "Skill-agent pack with intentional gaps (not gold)",
+  "runEnvironment": {
+    "tool": "Cursor",
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
+  },
+  "provider": "cursor",
+  "tool": "Cursor Agent",
+  "model": "Composer",
+  "modelNote": "Cursor Agent (Composer) CARTO packs (imperfect skill-agent)",
+  "skillUsed": false,
+  "skillPack": null,
+  "attempts": 1,
+  "tokens": {
+    "input": 8122,
+    "output": 1241,
+    "total": 9363,
+    "estimate": true,
+    "estimateMethod": "chars/4 + skill-context base (not provider bill)"
+  },
+  "latencySec": 11
+}

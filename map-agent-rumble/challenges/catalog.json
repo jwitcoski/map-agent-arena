@@ -117,6 +117,16 @@
           "full_viewport",
           "min_substance",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "carto_key_hygiene",
+          "carto_key_guard",
+          "prague_center",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -216,6 +226,16 @@
           "full_viewport",
           "min_substance",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "carto_key_hygiene",
+          "has_markers",
+          "has_popup",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -309,6 +329,15 @@
           "full_viewport",
           "min_substance",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "style_switcher",
+          "set_style",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -387,6 +416,14 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_atmosphere",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_atmosphere",
           "full_viewport",
@@ -477,6 +514,15 @@
           "no_stub_placeholder"
         ],
         "stadia": [
+          "loads_config",
+          "geocode_forward",
+          "geocode_reverse",
+          "has_debounce",
+          "full_viewport",
+          "min_substance",
+          "no_stub_placeholder"
+        ],
+        "carto": [
           "loads_config",
           "geocode_forward",
           "geocode_reverse",
@@ -576,6 +622,15 @@
           "full_viewport",
           "min_substance_med",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_flyto",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -661,6 +716,15 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_inset",
+          "extent_rect",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_inset",
           "extent_rect",
@@ -761,6 +825,15 @@
           "full_viewport",
           "min_substance_med",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_extrusion",
+          "has_pitch_or_bearing",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -846,6 +919,15 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_terrain_or_honest",
+          "has_flyto",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_terrain_or_honest",
           "has_flyto",
@@ -944,6 +1026,15 @@
           "min_substance_med",
           "no_stub_placeholder",
           "cluster_volume"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_cluster",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder",
+          "cluster_volume"
         ]
       }
     },
@@ -1023,6 +1114,14 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_story_chapters",
+          "has_flyto",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_story_chapters",
           "has_flyto",
@@ -1112,6 +1211,14 @@
           "has_layer_toggles",
           "min_substance_hard",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_legend",
+          "has_layer_toggles",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -1185,6 +1292,13 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_swipe",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_swipe",
           "min_substance_hard",
@@ -1268,6 +1382,14 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_playback",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_playback",
           "has_raf_or_interval",
@@ -1389,6 +1511,18 @@
           "has_raf_or_interval",
           "min_substance_hard",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_game_controls",
+          "has_follow_cam",
+          "has_track",
+          "real_street_route",
+          "road_constrained",
+          "has_raf_or_interval",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -1463,6 +1597,14 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_directions",
           "has_line_layer",
@@ -1549,6 +1691,14 @@
           "has_line_layer",
           "min_substance_hard",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "loads_config",
+          "geocode_forward",
+          "has_directions",
+          "has_line_layer",
+          "min_substance_hard",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -1598,7 +1748,14 @@
         ],
         "aws-location": [],
         "azure": [],
-        "stadia": []
+        "stadia": [],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_isochrone",
+          "min_substance_hard",
+          "no_stub_placeholder"
+        ]
       }
     },
     {
@@ -1690,6 +1847,15 @@
           "full_viewport",
           "min_substance_med",
           "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
+          "loads_config",
+          "has_responsive",
+          "has_touch_friendly",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
         ]
       }
     },
@@ -1769,6 +1935,14 @@
         ],
         "stadia": [
           "uses_stadia",
+          "loads_config",
+          "has_geolocation",
+          "full_viewport",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "carto": [
+          "uses_carto",
           "loads_config",
           "has_geolocation",
           "full_viewport",

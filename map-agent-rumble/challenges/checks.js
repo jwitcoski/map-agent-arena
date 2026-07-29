@@ -132,6 +132,18 @@
         /AWS_LOCATION_API_KEY/.test(src) && /(!\s*key|!window\.AWS_LOCATION|missing|throw)/i.test(src);
       return pts(ok, 10, "aws_key_guard", ok ? "Guard" : "Missing AWS Location key guard");
     },
+    carto_key_hygiene(src) {
+      const hard =
+        /CARTO_API_ACCESS_TOKEN\s*=\s*["']eyJ[A-Za-z0-9._-]{20,}["']/i.test(src) ||
+        /Authorization:\s*['"]Bearer\s+eyJ[A-Za-z0-9._-]{20,}/i.test(src);
+      return pts(!hard, 14, "carto_key_hygiene", hard ? "Hardcoded CARTO token" : "OK");
+    },
+    carto_key_guard(src) {
+      const ok =
+        /CARTO_API_ACCESS_TOKEN/.test(src) &&
+        /(!\s*token|!window\.CARTO|missing|throw)/i.test(src);
+      return pts(ok, 10, "carto_key_guard", ok ? "Guard" : "Missing CARTO token guard");
+    },
     prague_center(src) {
       const ok =
         /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src) ||
@@ -175,14 +187,14 @@
     },
     has_atmosphere(src) {
       const ok =
-        /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType|grayscale_dark|night|alidade_smooth_dark|basic-night|Monochrome|color-scheme=Dark/i.test(
+        /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType|grayscale_dark|night|alidade_smooth_dark|basic-night|Monochrome|color-scheme=Dark|dark-matter/i.test(
           src
         );
       return pts(ok, 14, "has_atmosphere", ok ? "Atmosphere" : "Fog/lights/globe mood");
     },
     geocode_forward(src) {
       const ok =
-        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address|fuzzySearch|\/search\/2\/|geocoding\/v1\/search|search-text|\/v2\/geocode/i.test(
+        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address|fuzzySearch|\/search\/2\/|geocoding\/v1\/search|search-text|\/v2\/geocode|\/v3\/lds\/geocoding/i.test(
           src
         );
       return pts(ok, 12, "geocode_forward", ok ? "Forward geocode" : "Forward geocode/search");
@@ -295,7 +307,7 @@
     },
     real_street_route(src) {
       const ok =
-        (/directions\/v5|DirectionsService|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\.|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
+        (/directions\/v5|DirectionsService|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\.|\/v3\/lds\/routing|lds\(\s*['"]routing['"]|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
           src
         ) &&
           !/hand-?drawn rectangle|fake track|toy oval/i.test(src));
@@ -315,7 +327,7 @@
     },
     has_directions(src) {
       const ok =
-        /directions|routing|osrm|\/route\/v1|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\./i.test(
+        /directions|routing|osrm|\/route\/v1|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\.|\/v3\/lds\/routing|lds\(\s*['"]routing['"]/i.test(
           src
         );
       return pts(ok, 14, "has_directions", ok ? "Directions" : "Directions/routing API");
@@ -325,7 +337,7 @@
       return pts(ok, 10, "has_line_layer", ok ? "Line" : "Draw route line");
     },
     has_isochrone(src) {
-      const ok = /isochrone|reachability|reachableRange|calculateReachableRange|contour|table\/v1/i.test(src);
+      const ok = /isochrone|reachability|reachableRange|calculateReachableRange|contour|table\/v1|\/v3\/lds\/isolines|lds\(\s*['"]isolines['"]/i.test(src);
       return pts(ok, 14, "has_isochrone", ok ? "Isochrone" : "Reachability/isochrone");
     },
     has_responsive(src) {
@@ -388,7 +400,10 @@
       return pts(ok, 12, "uses_stadia", ok ? "Stadia Maps" : "Use Stadia Maps tiles/API");
     },
     uses_carto(src) {
-      const ok = /@carto\/|carto\.com|carto-vl|deck\.gl.*[Cc]arto|CartoLayer/i.test(src);
+      const ok =
+        /@carto\/|carto\.com|cartocdn\.com|basemaps\.cartocdn|carto-vl|deck\.gl.*[Cc]arto|CartoLayer|\/v3\/lds\//i.test(
+          src
+        );
       return pts(ok, 12, "uses_carto", ok ? "CARTO" : "Use CARTO / CartoDB stack");
     },
     uses_here(src) {
@@ -457,6 +472,8 @@
     stadia_key_guard: "Missing Stadia key guard",
     aws_key_hygiene: "No hardcoded AWS Location API key",
     aws_key_guard: "Missing AWS Location key guard",
+    carto_key_hygiene: "No hardcoded CARTO API access token",
+    carto_key_guard: "Missing CARTO token guard",
     prague_center: "Center Prague [14.4178, 50.1167]",
     full_viewport: "Full-viewport #map",
     has_markers: "Markers / points (≥3 expected in prompt)",
@@ -540,6 +557,8 @@
     stadia_key_guard: "Missing-key UX for Stadia Maps.",
     aws_key_hygiene: "Same leak risk for Amazon Location Service API keys.",
     aws_key_guard: "Missing-key UX for Amazon Location Service.",
+    carto_key_hygiene: "Same leak risk for CARTO API Access Tokens.",
+    carto_key_guard: "Missing-token UX for CARTO.",
     prague_center: "Shared geographic fixture — also catches classic [lat,lng] vs [lng,lat] swaps.",
     full_viewport: "A 'hello map' that is a tiny div fails the product brief.",
     has_markers: "Pins & popups is useless without multiple interactive points.",

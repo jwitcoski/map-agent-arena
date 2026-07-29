@@ -12,7 +12,7 @@ This project was split out of [witcoskitech / cloud-resume-challenge](https://gi
 
 ```bash
 cp admin-boundaries/js/config.example.js admin-boundaries/js/config.js
-# add MAPBOX_ACCESS_TOKEN, MAPTILER_API_KEY, GOOGLE_MAPS_API_KEY, AZURE_MAPS_SUBSCRIPTION_KEY, TOMTOM_API_KEY, STADIA_API_KEY, AWS_LOCATION_API_KEY (optional AWS_LOCATION_REGION)
+# add MAPBOX_ACCESS_TOKEN, MAPTILER_API_KEY, GOOGLE_MAPS_API_KEY, AZURE_MAPS_SUBSCRIPTION_KEY, TOMTOM_API_KEY, STADIA_API_KEY, AWS_LOCATION_API_KEY, Carto_API_Access_Token (optional AWS_LOCATION_REGION, CARTO_API_BASE_URL)
 npx --yes serve .
 ```
 
@@ -32,6 +32,8 @@ Open `http://localhost:3000` (or the port `serve` prints).
 | `STADIA_API_KEY` | Stadia Maps API key |
 | `AWS_LOCATION_API_KEY` | Amazon Location Service API key (`v1.public.…`) |
 | `AWS_LOCATION_REGION` | Optional; defaults to `us-east-1` if unset |
+| `Carto_API_Access_Token` | [CARTO](https://carto.com/) API Access Token (LDS + Maps/SQL scopes) |
+| `CARTO_API_BASE_URL` | Optional; defaults to `https://gcp-us-east1.api.carto.com` |
 
 Optional later (pending seats):
 
