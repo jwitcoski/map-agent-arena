@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stadia S04 — awaiting API</title>
-  
+  <title>S04 Atmosphere - Stadia</title>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,22 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Stadia S04</strong>
-    <p>Stadia seat awaiting STADIA_API_KEY and Stadia Maps (Leaflet / MapLibre) packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
-</div>
+<div id="map"></div>
+<script>
+
+  const key = window.STADIA_API_KEY;
+  function styleUrl(name) {
+    return "https://tiles.stadiamaps.com/styles/" + name + ".json?api_key=" + encodeURIComponent(key);
+  }
+  
+  const map = new maplibregl.Map({
+    container: "map",
+    style: styleUrl("alidade_smooth_dark"),
+    center: [-122.42, 37.78],
+    zoom: 13,
+    pitch: 45
+  });
+  window.__MAP__ = map;
+</script>
 </body>
 </html>

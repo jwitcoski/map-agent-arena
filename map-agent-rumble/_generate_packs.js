@@ -1780,6 +1780,7 @@ noAgent.M02 = () => naShell("M02", `
 const { google, degradeGoogle } = require("./_google_packs.js")({ shell });
 const { azure, degradeAzure } = require("./_azure_packs.js")({ shell });
 const { tomtom, degradeTomtom } = require("./_tomtom_packs.js")({ shell });
+const { stadia, degradeStadia } = require("./_stadia_packs.js")({ shell });
 
 const packs = {
   mapbox,
@@ -1788,6 +1789,7 @@ const packs = {
   google,
   azure,
   tomtom,
+  stadia,
   esri: Object.fromEntries(SKILLS.map((id) => [id, () => esriPlaceholder(id, id)])),
 };
 
@@ -2062,6 +2064,7 @@ for (const fighter of FIGHTERS) {
     if (fighter === "google") html = degradeGoogle(id, html);
     if (fighter === "azure") html = degradeAzure(id, html);
     if (fighter === "tomtom") html = degradeTomtom(id, html);
+    if (fighter === "stadia") html = degradeStadia(id, html);
     fs.writeFileSync(path.join(dir, id + ".html"), html);
 
     const skill = skillsById[id] || { id, prompt: "" };
@@ -2089,6 +2092,8 @@ for (const fighter of FIGHTERS) {
                     ? "Azure skill-agent (imperfect)"
                   : fighter === "tomtom"
                     ? "TomTom skill-agent (imperfect)"
+                  : fighter === "stadia"
+                    ? "Stadia skill-agent (imperfect)"
                   : fighterMeta.label || fighter,
           ready: !awaiting,
           notes: awaiting

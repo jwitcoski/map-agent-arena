@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stadia S12 — awaiting API</title>
-  
+  <title>S12 Layer Studio - Stadia</title>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,58 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Stadia S12</strong>
-    <p>Stadia seat awaiting STADIA_API_KEY and Stadia Maps (Leaflet / MapLibre) packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Layer studio</strong>
+  <label><input type="checkbox" data-layer="heat" checked /> Heat circles</label>
+  <label><input type="checkbox" data-layer="line" checked /> Corridor</label>
+  <label><input type="checkbox" data-layer="pts" checked /> Sites</label>
+  <label>Opacity <input id="op" type="range" min="0" max="100" value="70" /></label>
+  <label>Filter <input id="filt" type="range" min="0" max="10" value="0" /></label>
+  <div class="legend">Legend: heat · corridor · sites</div>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.STADIA_API_KEY;
+  function styleUrl(name) {
+    return "https://tiles.stadiamaps.com/styles/" + name + ".json?api_key=" + encodeURIComponent(key);
+  }
+  
+  const map = new maplibregl.Map({
+    container: "map", style: styleUrl("alidade_smooth"), center: [14.4178, 50.1167], zoom: 12
+  });
+  map.on("load", () => {
+    map.addSource("heat", { type: "geojson", data: { type: "FeatureCollection", features: [
+      { type: "Feature", geometry: { type: "Point", coordinates: [14.42, 50.11] } },
+      { type: "Feature", geometry: { type: "Point", coordinates: [14.40, 50.09] } }
+    ]}});
+    map.addSource("line", { type: "geojson", data: { type: "Feature", geometry: {
+      type: "LineString", coordinates: [[14.40, 50.12], [14.43, 50.08]]
+    }}});
+    map.addSource("pts", { type: "geojson", data: { type: "FeatureCollection", features: [
+      { type: "Feature", properties: { id: 0 }, geometry: { type: "Point", coordinates: [14.41, 50.10] } },
+      { type: "Feature", properties: { id: 1 }, geometry: { type: "Point", coordinates: [14.42, 50.085] } }
+    ]}});
+    map.addLayer({ id: "heat", type: "circle", source: "heat",
+      paint: { "circle-radius": 40, "circle-color": "#f87171", "circle-opacity": 0.35 } });
+    map.addLayer({ id: "line", type: "line", source: "line",
+      paint: { "line-color": "#6ec8ff", "line-width": 4 } });
+    map.addLayer({ id: "pts", type: "circle", source: "pts",
+      paint: { "circle-radius": 6, "circle-color": "#f472b6" } });
+    document.querySelectorAll("[data-layer]").forEach((el) => {
+      el.addEventListener("change", () => {
+        map.setLayoutProperty(el.getAttribute("data-layer"), "visibility", el.checked ? "visible" : "none");
+      });
+    });
+    document.getElementById("op").oninput = (e) => {
+      const o = Number(e.target.value) / 100;
+      map.setPaintProperty("heat", "circle-opacity", o * 0.5);
+      map.setPaintProperty("line", "line-opacity", o);
+    };
+    
+    };
+  });
+  window.__MAP__ = map;
+</script>
 </body>
 </html>

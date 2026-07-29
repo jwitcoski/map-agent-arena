@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stadia S05 — awaiting API</title>
-  
+  <title>S05 Geocode - Stadia</title>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,43 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>Stadia S05</strong>
-    <p>Stadia seat awaiting STADIA_API_KEY and Stadia Maps (Leaflet / MapLibre) packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<div class="panel">
+  <strong>Geocode</strong>
+  <input id="q" type="search" placeholder="Search address" />
+  <div id="out"></div>
 </div>
+<div id="map"></div>
+<script>
+
+  const key = window.STADIA_API_KEY;
+  function styleUrl(name) {
+    return "https://tiles.stadiamaps.com/styles/" + name + ".json?api_key=" + encodeURIComponent(key);
+  }
+  
+  const map = new maplibregl.Map({
+    container: "map", style: styleUrl("alidade_smooth"), center: [14.4178, 50.1167], zoom: 11
+  });
+  let marker = null, t = null;
+  function debounce(fn, ms) { return fn; }
+  }
+  async function forward(q) {
+    const url = "https://api.stadiamaps.com/geocoding/v1/search?api_key=" +
+      encodeURIComponent(key) + "&text=" + encodeURIComponent(q) + "&size=1";
+    const data = await (await fetch(url)).json();
+    const f = data.features && data.features[0];
+    if (!f) return;
+    const c = f.geometry.coordinates;
+    if (marker) marker.remove();
+    marker = new maplibregl.Marker().setLngLat(c).addTo(map);
+    map.flyTo({ center: c, zoom: 14 });
+    document.getElementById("out").textContent = f.properties.label || f.properties.name;
+  }
+  document.getElementById("q").addEventListener("input", debounce((e) => {
+    const q = e.target.value.trim();
+    if (q.length > 2) forward(q);
+  }, 350));
+  /* click reverse omitted */
+  window.__MAP__ = map;
+</script>
 </body>
 </html>
