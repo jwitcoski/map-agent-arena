@@ -4,7 +4,7 @@
   "runEnvironment": {
     "tool": "Cursor",
     "toolUrl": "https://cursor.com",
-    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts � label them as estimates in the UI."
+    "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
   },
   "howToAdd": "See ADDING_A_FIGHTER.md. Registry is the source of truth.",
   "fighters": [
@@ -26,18 +26,23 @@
       "strength": "POI data quality, global coverage",
       "apis": "Maps, Geocoding, Places, Routes, Street View",
       "agentTestFit": "Gold standard for data accuracy; expensive at scale; good for testing agent robustness on rich POI and navigation tasks.",
-      "adapterPrompt": "Implement with the Google Maps JavaScript API when Maps Platform keys land. Use config.js for the key. Prefer Maps JS + Places/Routes/Street View where the skill needs search, routing, or imagery. Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with the Google Maps JavaScript API when Maps Platform keys land. Use config.js for the key. Prefer Maps JS + Places/Routes/Street View where the skill needs search, routing, or imagery. Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting Google Maps Platform keys + packs",
+        "modelNote": "Not run yet  -  awaiting Google Maps Platform keys + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": true, "isochrone": false }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": false
+      }
     },
     {
       "id": "mapbox",
@@ -68,7 +73,12 @@
         "inputBaseTokens": 42000,
         "attempts": 1
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": true, "isochrone": true }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": true
+      }
     },
     {
       "id": "esri",
@@ -88,18 +98,23 @@
       "strength": "Enterprise GIS, spatial analysis",
       "apis": "ArcGIS Online, Routing, Geocoding, Feature Layers",
       "agentTestFit": "Deep spatial analytics and integration with government/enterprise data; good for testing agents on complex geospatial queries and overlays.",
-      "adapterPrompt": "Implement with ArcGIS Maps SDK for JavaScript when API keys land. Until then this seat shows awaiting API � not a failing grade.",
+      "adapterPrompt": "Implement with ArcGIS Maps SDK for JavaScript when API keys land. Until then this seat shows awaiting API  -  not a failing grade.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting ArcGIS API packs",
+        "modelNote": "Not run yet  -  awaiting ArcGIS API packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": true, "isochrone": true }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": true
+      }
     },
     {
       "id": "here",
@@ -112,25 +127,30 @@
       "configKey": "HERE_API_KEY",
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "HERE Technologies � awaiting API key.",
+      "skillsetNote": "HERE Technologies  -  awaiting API key.",
       "ready": false,
       "status": "awaiting-api",
       "checkProfile": "here",
       "strength": "Fleet, logistics, offline maps",
       "apis": "Routing, Geocoding, Traffic, Truck APIs",
       "agentTestFit": "Strong in automotive and logistics; stable pricing; good for testing multi-modal routing and large-scale fleet scenarios.",
-      "adapterPrompt": "Implement with HERE Maps API for JavaScript when an API key lands. Load HERE_API_KEY from config.js. Prefer routing/traffic/truck APIs for logistics skills. Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with HERE Maps API for JavaScript when an API key lands. Load HERE_API_KEY from config.js. Prefer routing/traffic/truck APIs for logistics skills. Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting HERE API key + packs",
+        "modelNote": "Not run yet  -  awaiting HERE API key + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": true }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": true
+      }
     },
     {
       "id": "azure",
@@ -143,25 +163,30 @@
       "configKey": "AZURE_MAPS_SUBSCRIPTION_KEY",
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "Azure Maps (Bing Maps successor path) � awaiting subscription key.",
+      "skillsetNote": "Azure Maps (Bing Maps successor path)  -  awaiting subscription key.",
       "ready": false,
       "status": "awaiting-api",
       "checkProfile": "azure",
       "strength": "Microsoft ecosystem, enterprise integration",
       "apis": "Maps, Search, Routes, Spatial, Weather",
       "agentTestFit": "Tight integration with Azure services; Gen1 pricing deprecating Sept 2026 (migration needed); good for testing cloud-native, enterprise-grade agents.",
-      "adapterPrompt": "Implement with Azure Maps Web SDK when a subscription key lands in config.js. Prefer Maps/Search/Routes/Spatial/Weather modules. Note Gen1 pricing deprecation (Sept 2026). Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with Azure Maps Web SDK when a subscription key lands in config.js. Prefer Maps/Search/Routes/Spatial/Weather modules. Note Gen1 pricing deprecation (Sept 2026). Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting Azure Maps key + packs",
+        "modelNote": "Not run yet  -  awaiting Azure Maps key + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": false }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": false
+      }
     },
     {
       "id": "aws-location",
@@ -174,25 +199,30 @@
       "configKey": "AWS_LOCATION_API_KEY",
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "Amazon Location Service � awaiting API key / identity pool.",
+      "skillsetNote": "Amazon Location Service  -  awaiting API key / identity pool.",
       "ready": false,
       "status": "awaiting-api",
       "checkProfile": "aws-location",
       "strength": "AWS-native apps, cost control",
       "apis": "Maps, Geocoding, Routes, Places",
       "agentTestFit": "Built on HERE and Esri data; integrates with AWS stack; good for testing serverless, cloud-optimized agent architectures.",
-      "adapterPrompt": "Implement with Amazon Location Service (often MapLibre + AWS auth) when an API key or Cognito identity pool lands in config. Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with Amazon Location Service (often MapLibre + AWS auth) when an API key or Cognito identity pool lands in config. Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting AWS Location credentials + packs",
+        "modelNote": "Not run yet  -  awaiting AWS Location credentials + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": false }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": false
+      }
     },
     {
       "id": "tomtom",
@@ -205,25 +235,30 @@
       "configKey": "TOMTOM_API_KEY",
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "TomTom Maps � awaiting API key.",
+      "skillsetNote": "TomTom Maps  -  awaiting API key.",
       "ready": false,
       "status": "awaiting-api",
       "checkProfile": "tomtom",
       "strength": "Navigation, traffic, truck routing",
       "apis": "Maps, Search, Routing, Traffic, Truck",
       "agentTestFit": "Competitive pricing; strong traffic and truck routing; good for testing real-time navigation and logistics-focused agents.",
-      "adapterPrompt": "Implement with TomTom Maps SDK for Web when an API key lands. Load TOMTOM_API_KEY from config.js. Prefer routing/traffic/truck APIs for logistics skills. Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with TomTom Maps SDK for Web when an API key lands. Load TOMTOM_API_KEY from config.js. Prefer routing/traffic/truck APIs for logistics skills. Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting TomTom API key + packs",
+        "modelNote": "Not run yet  -  awaiting TomTom API key + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": true }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": true
+      }
     },
     {
       "id": "maptiler",
@@ -243,7 +278,7 @@
       "strength": "Open-source friendly, self-hostable",
       "apis": "Vector Tiles, Geocoding, Routing, Places",
       "agentTestFit": "Built on OSM; offers cloud and self-hosted options; good for testing open-data pipelines and hybrid cloud/self-hosted agents.",
-      "adapterPrompt": "Implement with @maptiler/sdk v4.0.2 (CDN). Load window.MAPTILER_API_KEY from config.js. Use MapStyle constants. Do not invent a Directions API � navigation skills are N/A for this seat.",
+      "adapterPrompt": "Implement with @maptiler/sdk v4.0.2 (CDN). Load window.MAPTILER_API_KEY from config.js. Use MapStyle constants. Do not invent a Directions API  -  navigation skills are N/A for this seat.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
@@ -254,7 +289,12 @@
         "inputBaseTokens": 36000,
         "attempts": 1
       },
-      "capabilities": { "directions": false, "geocoding": true, "terrain": true, "isochrone": false }
+      "capabilities": {
+        "directions": false,
+        "geocoding": true,
+        "terrain": true,
+        "isochrone": false
+      }
     },
     {
       "id": "stadia",
@@ -267,30 +307,35 @@
       "configKey": "STADIA_API_KEY",
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "Stadia Maps � cost-effective OSM tiles; awaiting API key.",
+      "skillsetNote": "Stadia Maps  -  cost-effective OSM tiles; awaiting API key.",
       "ready": false,
       "status": "awaiting-api",
       "checkProfile": "stadia",
       "strength": "Cost-effective OSM tiles",
       "apis": "Static Maps, Tiles, Geocoding, Routing",
       "agentTestFit": "Very affordable; OSM-based; good for testing budget-constrained agents and high-volume tile serving.",
-      "adapterPrompt": "Implement with Stadia Maps (Leaflet or MapLibre + Stadia tile/style URLs) when an API key lands in config.js. Prefer Stadia tiles/geocoding/routing. Until ready, awaiting API � not an F.",
+      "adapterPrompt": "Implement with Stadia Maps (Leaflet or MapLibre + Stadia tile/style URLs) when an API key lands in config.js. Prefer Stadia tiles/geocoding/routing. Until ready, awaiting API  -  not an F.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": null,
-        "modelNote": "Not run yet � awaiting Stadia Maps API key + packs",
+        "modelNote": "Not run yet  -  awaiting Stadia Maps API key + packs",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 0,
         "attempts": 0
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": false }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": false
+      }
     },
     {
       "id": "no-agent",
       "rank": 10,
-      "label": "OSM   /   MapLibre",
+      "label": "OSM / MapLibre",
       "color": "#fbbf24",
       "family": "open",
       "sdk": "MapLibre GL JS + OpenStreetMap / OpenFreeMap",
@@ -298,25 +343,31 @@
       "configKey": null,
       "playgroundUrl": null,
       "skillsetUrl": null,
-      "skillsetNote": "OpenStreetMap + MapLibre � full control, open data. No commercial agent skills. Packs intentionally imperfect (No Agent baseline).",
+      "skillsetNote": "OpenStreetMap + MapLibre  -  full control, open data. No commercial agent skills. Packs intentionally imperfect (No Agent baseline).",
       "ready": true,
       "status": "active",
       "checkProfile": "no-agent",
       "strength": "Full control, open data",
       "apis": "OSM tiles, MapLibre GL JS (Leaflet-class DIY also valid)",
       "agentTestFit": "Free and open; requires more DIY; excellent for testing agent adaptability to open-source stacks and custom tile pipelines.",
-      "adapterPrompt": "Implement with MapLibre GL JS + an open basemap (https://tiles.openfreemap.org/styles/liberty). No commercial vendor keys. Geocode via Nominatim; routing via public OSRM on the Navigation track. Expect lower scores � this is the open-stack / no-skill baseline.",
+      "adapterPrompt": "Implement with MapLibre GL JS + an open basemap (https://tiles.openfreemap.org/styles/liberty). No commercial vendor keys. Geocode via Nominatim; routing via public OSRM on the Navigation track. Expect lower scores  -  this is the open-stack / no-skill baseline.",
       "run": {
         "provider": "cursor",
         "tool": "Cursor Agent",
         "model": "Composer",
-        "modelNote": "Cursor Agent (Composer) with NO map vendor skills � open OSM baseline",
+        "modelNote": "Cursor Agent (Composer) with NO map vendor skills  -  open OSM baseline",
         "skillUsed": false,
         "skillPack": null,
         "inputBaseTokens": 2800,
         "attempts": 1
       },
-      "capabilities": { "directions": true, "geocoding": true, "terrain": false, "isochrone": true, "openRouter": true }
+      "capabilities": {
+        "directions": true,
+        "geocoding": true,
+        "terrain": false,
+        "isochrone": true,
+        "openRouter": true
+      }
     }
   ]
 }
