@@ -3,7 +3,10 @@
 <head>
  <meta charset="utf-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+ <meta http-equiv="Pragma" content="no-cache" />
  <title>Map Agent Royal Rumble - Rubix</title>
+ <base href="/map-agent-arena/map-agent-rumble/" />
  <link rel="preconnect" href="https://fonts.googleapis.com" />
  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -619,7 +622,7 @@
  <div class="hero-meta">
  <span><strong>Tool</strong> Cursor Agent · Composer</span>
  <span><strong>Tokens</strong> estimated, not billed receipts</span>
- <span><a href="./ADDING_A_FIGHTER.md">Add a platform -></a></span>
+ <span><strong>Docs</strong> see ADDING_A_FIGHTER.md in the repo</span>
  </div>
  </header>
 
@@ -643,9 +646,9 @@
  <div class="meta" id="skillMeta"></div>
  </div>
  <div class="nav">
- <button type="button" class="btn" id="prevSkill"><- Prev</button>
+ <button type="button" class="btn" id="prevSkill">Prev</button>
  <select class="btn" id="skillSelect" aria-label="Select skill"></select>
- <button type="button" class="btn" id="nextSkill">Next -></button>
+ <button type="button" class="btn" id="nextSkill">Next</button>
  <button type="button" class="btn primary" id="gradeAll">Grade</button>
  </div>
  </section>
@@ -661,7 +664,6 @@
  <p class="brief-intro" id="briefBanner">
  Shared prompt for every seat. Pick a fighter to see its SDK adapter and weighted checks.
  Live packs are imperfect skill-agent outputs not free As.
- <a href="./ADDING_A_FIGHTER.md">How seats get added</a>
  </p>
  <p class="label">Shared prompt</p>
  <p class="prompt" id="rubricPrompt"></p>
@@ -688,6 +690,7 @@
  <a href="../mapbox-playground/agent-grader.html">Mapbox playground</a>
  <a href="../maptiler-playground/agent-grader.html">MapTiler playground</a>
  <a href="../">Arena home</a>
+ <a href="https://github.com/jwitcoski/map-agent-arena/blob/main/map-agent-rumble/ADDING_A_FIGHTER.md" target="_blank" rel="noopener">Add a platform (GitHub)</a>
  </div>
  </div>
 
@@ -1172,14 +1175,18 @@
  document.getElementById("modeAll").classList.toggle("on", mode === "all");
  renderPager();
  }
- document.getElementById("modeLive").onclick = () => setStageMode("live");
- document.getElementById("modeAll").onclick = () => setStageMode("all");
+ document.getElementById("modeLive").onclick = (e) => { e.preventDefault(); setStageMode("live"); };
+ document.getElementById("modeAll").onclick = (e) => { e.preventDefault(); setStageMode("all"); };
 
- document.getElementById("prevSkill").onclick = () => {
+ document.getElementById("prevSkill").onclick = (e) => {
+ e.preventDefault();
+ e.stopPropagation();
  skillIndex = Math.max(0, skillIndex - 1);
  renderPager();
  };
- document.getElementById("nextSkill").onclick = () => {
+ document.getElementById("nextSkill").onclick = (e) => {
+ e.preventDefault();
+ e.stopPropagation();
  const list = filteredSkills();
  skillIndex = Math.min(list.length - 1, skillIndex + 1);
  renderPager();
@@ -1188,7 +1195,9 @@
  skillIndex = Number(e.target.value);
  renderPager();
  };
- document.getElementById("gradeAll").onclick = async () => {
+ document.getElementById("gradeAll").onclick = async (e) => {
+ e.preventDefault();
+ e.stopPropagation();
  gradeCache.clear();
  metaCache.clear();
  sourceCache.clear();
