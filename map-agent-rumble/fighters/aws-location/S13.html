@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AWS Location S13 — awaiting API</title>
-  
+  <title>S13 Swipe - AWS Location</title>
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="../../admin-boundaries/js/config.js"></script>
   <style>
     html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
     #map { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -42,12 +44,65 @@
 </head>
 <body>
 
-<div id="map" style="display:flex;align-items:center;justify-content:center;background:#06141a;color:#8fadb8;">
-  <div class="panel" style="position:static;max-width:28rem;">
-    <strong>AWS Location S13</strong>
-    <p>AWS Location seat awaiting AWS_LOCATION_API_KEY and Amazon Location Service (MapLibre) packs. Placeholder — not a failing grade until the fighter is ready.</p>
-    <p>coming soon · awaiting API</p>
-  </div>
+<style>
+  #wrap{position:relative;height:100%;}
+  #mapA,#mapB{position:absolute;inset:0;}
+  #mapB{clip-path: inset(0 0 0 50%);}
+  #bar{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;z-index:3;cursor:ew-resize;}
+</style>
+<div id="wrap">
+  <div id="mapA"></div>
+  <div id="mapB"></div>
+  <div id="bar"></div>
 </div>
+<script>
+
+  const key = window.AWS_LOCATION_API_KEY;
+  const region = window.AWS_LOCATION_REGION || "us-east-1";
+  function styleUrl(name, scheme) {
+    let u = "https://maps.geo." + region + ".amazonaws.com/v2/styles/" + name +
+      "/descriptor?key=" + encodeURIComponent(key);
+    if (scheme) u += "&color-scheme=" + scheme;
+    return u;
+  }
+  function placesUrl(path) {
+    return "https://places.geo." + region + ".amazonaws.com/v2/" + path +
+      "?key=" + encodeURIComponent(key);
+  }
+  function routesUrl() {
+    return "https://routes.geo." + region + ".amazonaws.com/v2/routes?key=" +
+      encodeURIComponent(key);
+  }
+  
+  const a = new maplibregl.Map({
+    container: "mapA", style: styleUrl("Standard", "Light"), center: [14.4178, 50.1167], zoom: 12
+  });
+  const b = new maplibregl.Map({
+    container: "mapB", style: styleUrl("Hybrid", "Light"), center: [14.4178, 50.1167], zoom: 12
+  });
+  function bind(x, y) {
+    x.on("move", () => {
+      if (y.__lock) return;
+      y.__lock = true;
+      y.jumpTo({ center: x.getCenter(), zoom: x.getZoom() });
+      y.__lock = false;
+    });
+  }
+  bind(a, b); bind(b, a);
+  const bar = document.getElementById("bar");
+  const mapB = document.getElementById("mapB");
+  bar.onpointerdown = () => {
+    const move = (ev) => {
+      const r = document.getElementById("wrap").getBoundingClientRect();
+      const pct = Math.min(90, Math.max(10, ((ev.clientX - r.left) / r.width) * 100));
+      bar.style.left = pct + "%";
+      mapB.style.clipPath = "inset(0 0 0 " + pct + "%)";
+    };
+    const up = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", up); };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
+  window.__MAP__ = a;
+</script>
 </body>
 </html>

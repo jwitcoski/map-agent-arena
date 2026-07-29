@@ -1781,6 +1781,7 @@ const { google, degradeGoogle } = require("./_google_packs.js")({ shell });
 const { azure, degradeAzure } = require("./_azure_packs.js")({ shell });
 const { tomtom, degradeTomtom } = require("./_tomtom_packs.js")({ shell });
 const { stadia, degradeStadia } = require("./_stadia_packs.js")({ shell });
+const { awsLocation, degradeAwsLocation } = require("./_aws_location_packs.js")({ shell });
 
 const packs = {
   mapbox,
@@ -1790,6 +1791,7 @@ const packs = {
   azure,
   tomtom,
   stadia,
+  "aws-location": awsLocation,
   esri: Object.fromEntries(SKILLS.map((id) => [id, () => esriPlaceholder(id, id)])),
 };
 
@@ -2065,6 +2067,7 @@ for (const fighter of FIGHTERS) {
     if (fighter === "azure") html = degradeAzure(id, html);
     if (fighter === "tomtom") html = degradeTomtom(id, html);
     if (fighter === "stadia") html = degradeStadia(id, html);
+    if (fighter === "aws-location") html = degradeAwsLocation(id, html);
     fs.writeFileSync(path.join(dir, id + ".html"), html);
 
     const skill = skillsById[id] || { id, prompt: "" };
@@ -2094,6 +2097,8 @@ for (const fighter of FIGHTERS) {
                     ? "TomTom skill-agent (imperfect)"
                   : fighter === "stadia"
                     ? "Stadia skill-agent (imperfect)"
+                  : fighter === "aws-location"
+                    ? "AWS Location skill-agent (imperfect)"
                   : fighterMeta.label || fighter,
           ready: !awaiting,
           notes: awaiting

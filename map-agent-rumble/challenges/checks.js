@@ -123,6 +123,15 @@
         /STADIA_API_KEY/.test(src) && /(!\s*key|!window\.STADIA|missing|throw)/i.test(src);
       return pts(ok, 10, "stadia_key_guard", ok ? "Guard" : "Missing Stadia key guard");
     },
+    aws_key_hygiene(src) {
+      const hard = /AWS_LOCATION_API_KEY\s*=\s*["']v1\.public\.[A-Za-z0-9._-]{20,}["']/i.test(src);
+      return pts(!hard, 14, "aws_key_hygiene", hard ? "Hardcoded AWS Location key" : "OK");
+    },
+    aws_key_guard(src) {
+      const ok =
+        /AWS_LOCATION_API_KEY/.test(src) && /(!\s*key|!window\.AWS_LOCATION|missing|throw)/i.test(src);
+      return pts(ok, 10, "aws_key_guard", ok ? "Guard" : "Missing AWS Location key guard");
+    },
     prague_center(src) {
       const ok =
         /\[\s*14\.4178\s*,\s*50\.1167\s*\]/.test(src) ||
@@ -166,14 +175,14 @@
     },
     has_atmosphere(src) {
       const ok =
-        /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType|grayscale_dark|night|alidade_smooth_dark|basic-night/i.test(
+        /setFog|lightPreset|halo|space|atmosphere|fog|styles\.|StyledMapType|grayscale_dark|night|alidade_smooth_dark|basic-night|Monochrome|color-scheme=Dark/i.test(
           src
         );
       return pts(ok, 14, "has_atmosphere", ok ? "Atmosphere" : "Fog/lights/globe mood");
     },
     geocode_forward(src) {
       const ok =
-        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address|fuzzySearch|\/search\/2\/|geocoding\/v1\/search/i.test(
+        /geocod|Geocoder|searchbox|nominatim|forward|\/search\?|places\.Autocomplete|PlacesService|search\/address|fuzzySearch|\/search\/2\/|geocoding\/v1\/search|search-text|\/v2\/geocode/i.test(
           src
         );
       return pts(ok, 12, "geocode_forward", ok ? "Forward geocode" : "Forward geocode/search");
@@ -182,13 +191,13 @@
       const omitted = /click reverse omitted|reverse omitted|TODO reverse/i.test(src);
       const ok =
         !omitted &&
-        (/\/reverse\b|reverse\?|reverseGeocode|geocoding\/v1\/reverse|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location|search\/address\/reverse|\/reverse\/2\//i.test(
+        (/\/reverse\b|reverse\?|reverseGeocode|geocoding\/v1\/reverse|reverse-geocode|method:\s*['"]reverse['"]|geocode\(\s*\{\s*location|search\/address\/reverse|\/reverse\/2\//i.test(
           src
         ) ||
           (/map\.on\(\s*['"]click['"]|addListener\(\s*map\s*,\s*['"]click['"]|events\.add\(\s*['"]click['"]/i.test(
             src
           ) &&
-            /geocod|nominatim|Geocoder|search\/address|\/search\/2\/|\/reverse\/2\/|reverseGeocode|geocoding\/v1/i.test(
+            /geocod|nominatim|Geocoder|search\/address|\/search\/2\/|\/reverse\/2\/|reverseGeocode|geocoding\/v1|places\.geo/i.test(
               src
             )));
       return pts(ok, 12, "geocode_reverse", ok ? "Reverse" : "Reverse geocode on click");
@@ -286,7 +295,7 @@
     },
     real_street_route(src) {
       const ok =
-        (/directions\/v5|DirectionsService|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
+        (/directions\/v5|DirectionsService|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\.|map matching|map-matching|router\.project-osrm\.org\/route|\/match\/v1|geometries=geojson/i.test(
           src
         ) &&
           !/hand-?drawn rectangle|fake track|toy oval/i.test(src));
@@ -306,7 +315,7 @@
     },
     has_directions(src) {
       const ok =
-        /directions|routing|osrm|\/route\/v1|route\/directions|calculateRoute|api\.stadiamaps\.com\/route/i.test(
+        /directions|routing|osrm|\/route\/v1|route\/directions|calculateRoute|api\.stadiamaps\.com\/route|routes\.geo\./i.test(
           src
         );
       return pts(ok, 14, "has_directions", ok ? "Directions" : "Directions/routing API");
@@ -403,7 +412,10 @@
       return pts(ok, 12, "uses_apple", ok ? "MapKit JS" : "Use Apple MapKit JS");
     },
     uses_aws_location(src) {
-      const ok = /geo\.(.*\.)?amazonaws\.com|@aws\/amazon-location|AWSLocation|amazon-location/i.test(src);
+      const ok =
+        /maps\.geo\.[a-z0-9-]+\.amazonaws\.com|places\.geo\.|routes\.geo\.|@aws\/amazon-location|amazon-location/i.test(
+          src
+        );
       return pts(ok, 12, "uses_aws_location", ok ? "AWS Location" : "Use Amazon Location Service");
     },
     uses_cesium(src) {
@@ -443,6 +455,8 @@
     tomtom_key_guard: "Missing TomTom key guard",
     stadia_key_hygiene: "No hardcoded Stadia API key",
     stadia_key_guard: "Missing Stadia key guard",
+    aws_key_hygiene: "No hardcoded AWS Location API key",
+    aws_key_guard: "Missing AWS Location key guard",
     prague_center: "Center Prague [14.4178, 50.1167]",
     full_viewport: "Full-viewport #map",
     has_markers: "Markers / points (≥3 expected in prompt)",
@@ -524,6 +538,8 @@
     tomtom_key_guard: "Missing-key UX for TomTom Maps SDK.",
     stadia_key_hygiene: "Same leak risk for Stadia Maps API keys.",
     stadia_key_guard: "Missing-key UX for Stadia Maps.",
+    aws_key_hygiene: "Same leak risk for Amazon Location Service API keys.",
+    aws_key_guard: "Missing-key UX for Amazon Location Service.",
     prague_center: "Shared geographic fixture — also catches classic [lat,lng] vs [lng,lat] swaps.",
     full_viewport: "A 'hello map' that is a tiny div fails the product brief.",
     has_markers: "Pins & popups is useless without multiple interactive points.",
