@@ -53,6 +53,10 @@
 <script>
 
   const key = window.TOMTOM_API_KEY;
+  if (!key || key === "YOUR_TOMTOM_API_KEY") {
+    document.body.innerHTML = '<div style="margin:0;display:flex;align-items:center;justify-content:center;height:100%;background:#05090e;color:#fbbf24;font:600 13px system-ui;padding:16px;text-align:center">Missing TOMTOM_API_KEY — set GitHub secret TOMTOM_API_KEY (Pages) or map-agent-rumble/admin-boundaries/js/config.js (local).</div>';
+    throw new Error("Missing TOMTOM_API_KEY");
+  }
   tt.setProductInfo("map-agent-arena", "1.0");
   
   const map = tt.map({ key, container: "map", center: [14.4178, 50.1167], zoom: 12 });

@@ -19,10 +19,10 @@
   "attempts": 1,
   "tokens": {
     "input": 8115,
-    "output": 1257,
-    "total": 9372,
+    "output": 1367,
+    "total": 9482,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 15
+  "latencySec": 16
 }

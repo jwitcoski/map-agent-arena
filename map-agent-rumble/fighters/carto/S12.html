@@ -58,7 +58,9 @@
 <script>
 
   const token = window.CARTO_API_ACCESS_TOKEN;
-  const base = (window.CARTO_API_BASE_URL || "https://gcp-us-east1.api.carto.com").replace(//$/, "");
+  let base = window.CARTO_API_BASE_URL || "https://gcp-us-east1.api.carto.com";
+  if (typeof base === "string" && base.charAt(base.length - 1) === "/") base = base.slice(0, -1);
+  
   function styleUrl(name) {
     return "https://basemaps.cartocdn.com/gl/" + name + "/style.json";
   }

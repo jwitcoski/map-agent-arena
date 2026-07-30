@@ -12,11 +12,17 @@ module.exports = function buildCartoPacks({ shell }) {
   <script src="../../admin-boundaries/js/config.js"></script>`;
   }
 
-  function cartoBoot(extra = "") {
+  function cartoBoot(extra = "", opts = {}) {
+    const requireToken = opts.requireToken === true;
+    // Avoid /\/$/ inside template literals — `\/` collapses to `/` and becomes a line-comment.
     return `
   const token = window.CARTO_API_ACCESS_TOKEN;
-  const base = (window.CARTO_API_BASE_URL || "https://gcp-us-east1.api.carto.com").replace(/\/$/, "");
-  if (!token || token === "YOUR_CARTO_API_ACCESS_TOKEN") throw new Error("Missing CARTO_API_ACCESS_TOKEN");
+  let base = window.CARTO_API_BASE_URL || "https://gcp-us-east1.api.carto.com";
+  if (typeof base === "string" && base.charAt(base.length - 1) === "/") base = base.slice(0, -1);
+  ${requireToken ? `if (!token || token === "YOUR_CARTO_API_ACCESS_TOKEN") {
+    document.body.innerHTML = '<div style="margin:0;display:flex;align-items:center;justify-content:center;height:100%;background:#05090e;color:#fbbf24;font:600 13px system-ui;padding:16px;text-align:center">Missing CARTO_API_ACCESS_TOKEN — set GitHub secret CARTO_API_ACCESS_TOKEN (Pages) or map-agent-rumble/admin-boundaries/js/config.js (local).</div>';
+    throw new Error("Missing CARTO_API_ACCESS_TOKEN");
+  }` : ""}
   function styleUrl(name) {
     return "https://basemaps.cartocdn.com/gl/" + name + "/style.json";
   }
@@ -66,7 +72,7 @@ module.exports = function buildCartoPacks({ shell }) {
       return shell("S01 Hello Map - CARTO", cartoHead(), `
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: false })}
   const map = new maplibregl.Map({
     container: "map",
     style: styleUrl("positron-gl-style"),
@@ -81,7 +87,7 @@ ${cartoBoot()}
       return shell("S02 Pins - CARTO", cartoHead(), `
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: false })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"), center: ${PRAGUE}, zoom: 12
   });
@@ -140,7 +146,7 @@ ${cartoBoot()}
 </div>
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: true })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"), center: ${PRAGUE}, zoom: 11
   });
@@ -449,7 +455,7 @@ ${cartoBoot()}
 </div>
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: true })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"),
     center: ${PRAGUE}, zoom: 15, pitch: 45
@@ -495,7 +501,7 @@ ${cartoBoot()}
 <div class="panel"><strong>Directions</strong><button type="button" id="go">Route</button></div>
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: true })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"), center: ${PRAGUE}, zoom: 12
   });
@@ -525,7 +531,7 @@ ${cartoBoot()}
 </div>
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: true })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"), center: ${PRAGUE}, zoom: 12
   });
@@ -557,7 +563,7 @@ ${cartoBoot()}
 <div class="panel"><strong>Reachability</strong><button type="button" id="go">15 min isoline</button></div>
 <div id="map"></div>
 <script>
-${cartoBoot()}
+${cartoBoot("", { requireToken: true })}
   const map = new maplibregl.Map({
     container: "map", style: styleUrl("positron-gl-style"), center: ${PRAGUE}, zoom: 11
   });
@@ -638,10 +644,7 @@ ${cartoBoot()}
 
   function degradeCarto(id, html) {
     let out = html;
-    out = out.replace(
-      /if \(!token \|\| token === "YOUR_CARTO_API_ACCESS_TOKEN"\) throw new Error\("Missing CARTO_API_ACCESS_TOKEN"\);\s*/g,
-      ""
-    );
+    // Keep the missing-token guard — silent blank maps hide config issues.
     switch (id) {
       case "S01":
         out = out.replace("zoom: 12", "zoom: 4");

@@ -19,8 +19,8 @@
   "attempts": 1,
   "tokens": {
     "input": 8111,
-    "output": 754,
-    "total": 8865,
+    "output": 864,
+    "total": 8975,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },

@@ -33,7 +33,7 @@ jobs:
           STADIA_API_KEY: ${{ secrets.STADIA_API_KEY }}
           AWS_LOCATION_API_KEY: ${{ secrets.AWS_LOCATION_API_KEY }}
           AWS_LOCATION_REGION: ${{ secrets.AWS_LOCATION_REGION }}
-          CARTO_API_ACCESS_TOKEN: ${{ secrets.Carto_API_Access_Token }}
+          CARTO_API_ACCESS_TOKEN: ${{ secrets.CARTO_API_ACCESS_TOKEN }}
           CARTO_API_BASE_URL: ${{ secrets.CARTO_API_BASE_URL }}
         run: |
           python3 - <<'PY'

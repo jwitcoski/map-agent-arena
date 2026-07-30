@@ -15,7 +15,10 @@ module.exports = function buildTomtomPacks({ shell }) {
   function ttBoot(extra = "") {
     return `
   const key = window.TOMTOM_API_KEY;
-  if (!key || key === "YOUR_TOMTOM_API_KEY") throw new Error("Missing TOMTOM_API_KEY");
+  if (!key || key === "YOUR_TOMTOM_API_KEY") {
+    document.body.innerHTML = '<div style="margin:0;display:flex;align-items:center;justify-content:center;height:100%;background:#05090e;color:#fbbf24;font:600 13px system-ui;padding:16px;text-align:center">Missing TOMTOM_API_KEY — set GitHub secret TOMTOM_API_KEY (Pages) or map-agent-rumble/admin-boundaries/js/config.js (local).</div>';
+    throw new Error("Missing TOMTOM_API_KEY");
+  }
   tt.setProductInfo("map-agent-arena", "1.0");
   ${extra}`;
   }
@@ -533,10 +536,7 @@ ${ttBoot()}
 
   function degradeTomtom(id, html) {
     let out = html;
-    out = out.replace(
-      /if \(!key \|\| key === "YOUR_TOMTOM_API_KEY"\) throw new Error\("Missing TOMTOM_API_KEY"\);\s*/g,
-      ""
-    );
+    // Keep the missing-key guard — blank maps from undefined keys look like API failures.
     switch (id) {
       case "S01":
         out = out.replace("zoom: 12", "zoom: 4");
