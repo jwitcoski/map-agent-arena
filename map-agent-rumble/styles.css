@@ -789,6 +789,86 @@ select.btn option {
   color: var(--muted);
 }
 
+/* Agent improvement playbook */
+.improve {
+  padding: 8px var(--pad) 28px;
+  max-width: 1400px;
+}
+
+.improve h3 {
+  margin: 0 0 14px;
+  font-family: Sora, sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.improve h3 .board-sub {
+  display: block;
+  margin-top: 4px;
+  font-family: Outfit, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.improve-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.improve-item {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: rgba(12, 21, 32, 0.55);
+}
+
+.improve-item.baseline {
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.improve-item.pending {
+  opacity: 0.7;
+}
+
+.improve-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.improve-name {
+  font-family: Sora, sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+
+.improve-meta {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.improve-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.improve-list li::marker {
+  color: var(--muted);
+}
+
 .site-links {
   padding: 0 var(--pad) 40px;
   display: flex;

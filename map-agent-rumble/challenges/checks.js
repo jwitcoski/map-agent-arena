@@ -230,6 +230,29 @@
       const ok = /inset|#overview|overview-map|minimap/i.test(src);
       return pts(ok, 14, "has_inset", ok ? "Inset" : "Need inset/overview map");
     },
+    has_marathon_route(src) {
+      const line = /type:\s*["']line["']|addLayer\([\s\S]*line|Polyline|L\.polyline/i.test(src);
+      const route =
+        /LineString|marathon|routeCoords|route\.geometry|addSource\([^)]*route/i.test(src);
+      return pts(line && route, 16, "has_marathon_route", line && route ? "Marathon route line" : "Need marathon route as a line layer");
+    },
+    has_elevation_bars(src) {
+      const chart =
+        /getContext\(\s*["']2d["']\s*\)|<svg[\s\S]*<(rect|path)|bar(Graph|Chart)|elevation.*(bar|chart|profile)/i.test(
+          src
+        );
+      const inset = /elev|profile|chart|inset/i.test(src);
+      return pts(
+        chart && inset,
+        16,
+        "has_elevation_bars",
+        chart && inset ? "Elevation bar chart" : "Need inset bar graph of elevation along the route"
+      );
+    },
+    nyc_marathon_context(src) {
+      const ok = /nyc|new york|marathon|verrazzano|central park|queensboro/i.test(src);
+      return pts(ok, 10, "nyc_marathon_context", ok ? "NYC marathon context" : "Frame as NYC (or named) marathon");
+    },
     extent_rect(src) {
       const ok = /extent|bounds|getBounds|rectangle|bbox|LatLngBounds/i.test(src);
       return pts(ok, 10, "extent_rect", ok ? "Extent" : "Show main extent on inset");
@@ -487,6 +510,9 @@
     has_flyto: "flyTo / easeTo camera move",
     has_pitch_or_bearing: "Pitch or bearing change",
     has_inset: "Inset / overview map",
+    has_marathon_route: "Marathon course drawn as a line layer",
+    has_elevation_bars: "Inset bar graph of elevation along the route",
+    nyc_marathon_context: "NYC (or named) marathon framing",
     extent_rect: "Main extent shown on inset",
     has_extrusion: "3D buildings / fill-extrusion",
     has_terrain: "Terrain / DEM + exaggeration",
@@ -572,6 +598,9 @@
     has_flyto: "Camera choreography requires animated camera moves, not only setCenter.",
     has_pitch_or_bearing: "A tour that never tilts/rotates is a weak choreography.",
     has_inset: "Inset maps need a second map instance (overview), not a CSS thumbnail.",
+    has_marathon_route: "Draw the full marathon course as a GeoJSON/line layer the camera can fit.",
+    has_elevation_bars: "Elevation profile belongs in an inset chart (canvas/SVG bars), not only as map labels.",
+    nyc_marathon_context: "Use the NYC Marathon (or clearly name another famous marathon) as the scenario.",
     extent_rect: "Overview must show where the main map is looking.",
     has_extrusion: "3D buildings need extrusion (or vendor 3D buildings), not just pitch.",
     has_terrain: "Terrain fly needs DEM + exaggeration, not only a mountain center.",
@@ -694,9 +723,16 @@
   function resolveCheckIds(fighter, skill) {
     const checks = (skill && skill.checks) || {};
     const id = fighter && fighter.id;
-    if (id && Array.isArray(checks[id]) && checks[id].length) return checks[id].slice();
+    // Explicit [] means deferred / N/A for this seat (do not fall through).
+    if (id && Object.prototype.hasOwnProperty.call(checks, id) && Array.isArray(checks[id])) {
+      return checks[id].slice();
+    }
     const profile = fighter && fighter.checkProfile;
-    if (profile && Array.isArray(checks[profile]) && checks[profile].length) {
+    if (
+      profile &&
+      Object.prototype.hasOwnProperty.call(checks, profile) &&
+      Array.isArray(checks[profile])
+    ) {
       return checks[profile].slice();
     }
     if (fighter && fighter.ready === false) return ["awaiting_api"];

@@ -947,6 +947,16 @@
     });
 
     await renderLeaderboard();
+    renderImprovePlaybook();
+  }
+
+  function renderImprovePlaybook() {
+    const el = document.getElementById("improveGrid");
+    const blurbEl = document.getElementById("improveBlurb");
+    if (blurbEl) {
+      blurbEl.textContent = "Empty for now — fill in after the next agent re-run.";
+    }
+    if (el) el.innerHTML = "";
   }
 
   async function renderAll() {

@@ -1527,6 +1527,43 @@
       }
     },
     {
+      "id": "S16",
+      "tier": "hard",
+      "track": "core",
+      "title": "Marathon Elevation",
+      "categories": [
+        "display",
+        "dataviz"
+      ],
+      "maxScore": 120,
+      "prompt": "Map a famous marathon course (NYC Marathon is the default) with the full route as a line layer, fit the camera to the course, and add an inset bar graph of elevation (height) along the route — distance on X, elevation on Y. Label start/finish. Open stack: MapLibre + open tiles; commercial seats use their SDK + elevation or honest sampled profile.",
+      "checks": {
+        "no-agent": [
+          "uses_maplibre",
+          "no_commercial_key",
+          "has_marathon_route",
+          "has_elevation_bars",
+          "nyc_marathon_context",
+          "min_substance_med",
+          "no_stub_placeholder"
+        ],
+        "esri": [
+          "placeholder_or_esri"
+        ],
+        "here": [
+          "awaiting_api"
+        ],
+        "mapbox": [],
+        "maptiler": [],
+        "google": [],
+        "tomtom": [],
+        "aws-location": [],
+        "azure": [],
+        "stadia": [],
+        "carto": []
+      }
+    },
+    {
       "id": "N01",
       "tier": "medium",
       "track": "navigation",
