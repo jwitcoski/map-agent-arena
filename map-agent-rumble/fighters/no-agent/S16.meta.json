@@ -3,7 +3,7 @@
   "fighter": "no-agent",
   "agentLabel": "OSM · MapLibre (open baseline)",
   "ready": true,
-  "notes": "NYC Marathon route + elevation bar inset — open stack baseline before vendor re-runs",
+  "notes": "NYC Marathon via OSRM street snap + elevation line graph with click-to-pick — open stack baseline before vendor re-runs",
   "runEnvironment": {
     "tool": "Cursor",
     "note": "Each fighter pack was authored as a Cursor Agent run. Token counts are estimated from prompt/skills context + solution size (~4 chars/token), not billed API receipts  -  label them as estimates in the UI."
@@ -18,11 +18,11 @@
   "agentInstall": null,
   "attempts": 1,
   "tokens": {
-    "input": 3162,
-    "output": 1806,
-    "total": 4968,
+    "input": 3562,
+    "output": 3807,
+    "total": 7369,
     "estimate": true,
     "estimateMethod": "chars/4 + skill-context base (not provider bill)"
   },
-  "latencySec": 14
+  "latencySec": 18
 }

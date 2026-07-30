@@ -1622,70 +1622,7 @@ noAgent.S14 = () => naShell("S14", `
   window.__MAP__ = map;
 </script>`);
 
-noAgent.S16 = () => naShell("S16 Marathon Elevation", `
-<div class="panel">
-  <strong>NYC Marathon</strong>
-  Simplified open-data course · MapLibre + OpenFreeMap
-  <div class="stat" id="stats">Loading route…</div>
-</div>
-<div id="map"></div>
-<div id="elevChart" class="elevation-profile inset" style="position:absolute;z-index:2;left:10px;right:10px;bottom:28px;height:132px;max-width:min(520px,94vw);background:rgba(10,16,32,.94);color:#eef2ff;border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:8px 10px 6px;box-sizing:border-box">
-  <div style="display:flex;justify-content:space-between;font-size:11px;color:#9fb0c8;margin-bottom:4px">
-    <strong style="color:#eef2ff;font-size:12px">Elevation along route</strong>
-    <span id="elevRange">—</span>
-  </div>
-  <canvas id="elevCanvas" width="640" height="120" aria-label="Bar graph of elevation along the NYC Marathon" style="display:block;width:100%;height:96px"></canvas>
-</div>
-<script>
-  const routeCoords = [
-    [-74.0555, 40.6038], [-74.0448, 40.6065], [-74.0390, 40.6150], [-74.0270, 40.6280],
-    [-74.0120, 40.6400], [-73.9960, 40.6505], [-73.9800, 40.6620], [-73.9680, 40.6780],
-    [-73.9550, 40.6920], [-73.9440, 40.7050], [-73.9480, 40.7200], [-73.9545, 40.7450],
-    [-73.9540, 40.7575], [-73.9580, 40.7680], [-73.9605, 40.7800], [-73.9630, 40.7920],
-    [-73.9400, 40.8120], [-73.9220, 40.8280], [-73.9300, 40.8350], [-73.9480, 40.8200],
-    [-73.9580, 40.8000], [-73.9650, 40.7820], [-73.9685, 40.7715]
-  ];
-  const elevM = [8,18,68,42,22,18,16,20,24,28,26,30,48,22,20,24,18,22,20,26,32,38,34];
-  function haversineKm(a, b) {
-    const R = 6371, toRad = (d) => (d * Math.PI) / 180;
-    const dLat = toRad(b[1] - a[1]), dLng = toRad(b[0] - a[0]);
-    const s = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.sin(dLng / 2) ** 2;
-    return 2 * R * Math.asin(Math.sqrt(s));
-  }
-  let totalKm = 0, gain = 0;
-  for (let i = 1; i < routeCoords.length; i++) totalKm += haversineKm(routeCoords[i - 1], routeCoords[i]);
-  for (let i = 1; i < elevM.length; i++) if (elevM[i] > elevM[i - 1]) gain += elevM[i] - elevM[i - 1];
-  const elevMin = Math.min(...elevM), elevMax = Math.max(...elevM);
-  document.getElementById("stats").textContent = "~" + totalKm.toFixed(1) + " km sampled · +" + Math.round(gain) + " m gain · Verrazzano → Central Park";
-  document.getElementById("elevRange").textContent = elevMin + "–" + elevMax + " m";
-  (function drawElevationBars() {
-    const canvas = document.getElementById("elevCanvas");
-    const ctx = canvas.getContext("2d");
-    const w = canvas.width, h = canvas.height, padL = 28, padR = 8, padT = 8, padB = 18;
-    const plotW = w - padL - padR, plotH = h - padT - padB, n = elevM.length, gap = 2;
-    const barW = Math.max(2, (plotW - gap * (n - 1)) / n), y0 = elevMin - 4, y1 = elevMax + 6;
-    ctx.clearRect(0, 0, w, h);
-    ctx.strokeStyle = "rgba(255,255,255,.12)";
-    ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, h - padB); ctx.lineTo(w - padR, h - padB); ctx.stroke();
-    for (let i = 0; i < n; i++) {
-      const bh = Math.max(1, ((elevM[i] - y0) / (y1 - y0)) * plotH);
-      ctx.fillStyle = elevM[i] > 40 ? "#f59e0b" : "#38bdf8";
-      ctx.fillRect(padL + i * (barW + gap), padT + plotH - bh, barW, bh);
-    }
-    ctx.fillStyle = "#9fb0c8"; ctx.font = "10px system-ui";
-    ctx.fillText("Start", padL, h - 4); ctx.fillText("Finish · Central Park", w - padR - 110, h - 4);
-  })();
-  const map = new maplibregl.Map({ container: "map", style: "${OPEN_STYLE}", center: [-73.98, 40.72], zoom: 10 });
-  map.on("load", () => {
-    map.addSource("marathon-route", { type: "geojson", data: { type: "Feature", properties: { name: "NYC Marathon" }, geometry: { type: "LineString", coordinates: routeCoords } } });
-    map.addLayer({ id: "marathon-route", type: "line", source: "marathon-route", paint: { "line-color": "#ef4444", "line-width": 4, "line-opacity": 0.9 } });
-    new maplibregl.Marker({ color: "#22c55e" }).setLngLat(routeCoords[0]).setPopup(new maplibregl.Popup().setText("Start · Verrazzano / Staten Island")).addTo(map);
-    new maplibregl.Marker({ color: "#ef4444" }).setLngLat(routeCoords[routeCoords.length - 1]).setPopup(new maplibregl.Popup().setText("Finish · Central Park")).addTo(map);
-    const bounds = routeCoords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(routeCoords[0], routeCoords[0]));
-    map.fitBounds(bounds, { padding: { top: 72, bottom: 160, left: 40, right: 40 }, duration: 900 });
-  });
-  window.__MAP__ = map;
-</script>`);
+noAgent.S16 = () => fs.readFileSync(path.join(ROOT, "fighters", "no-agent", "S16.html"), "utf8");
 
 noAgent.S15 = () => naShell("S15", `
 <div class="panel">

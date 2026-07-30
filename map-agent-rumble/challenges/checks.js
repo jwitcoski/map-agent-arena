@@ -236,17 +236,40 @@
         /LineString|marathon|routeCoords|route\.geometry|addSource\([^)]*route/i.test(src);
       return pts(line && route, 16, "has_marathon_route", line && route ? "Marathon route line" : "Need marathon route as a line layer");
     },
-    has_elevation_bars(src) {
-      const chart =
-        /getContext\(\s*["']2d["']\s*\)|<svg[\s\S]*<(rect|path)|bar(Graph|Chart)|elevation.*(bar|chart|profile)/i.test(
+    street_following_route(src) {
+      const ok =
+        /router\.project-osrm\.org|osrm\.org\/route|map.?match|directions\/v5|overview=full|geometries=geojson/i.test(
           src
         );
-      const inset = /elev|profile|chart|inset/i.test(src);
       return pts(
-        chart && inset,
+        ok,
+        14,
+        "street_following_route",
+        ok ? "Street-snapped routing" : "Route must follow streets (OSRM / Directions / map matching) — not a simplified polyline only"
+      );
+    },
+    has_elevation_chart(src) {
+      const canvasOrSvg = /getContext\(\s*["']2d["']\s*\)|<svg[\s\S]*<(path|polyline)/i.test(src);
+      const lineGraph =
+        /lineTo\s*\(|stroke\s*\(|line graph|elevation.*(line|profile|chart)|strokeStyle/i.test(src);
+      const inset = /elev|profile|chart|inset/i.test(src);
+      const ok = canvasOrSvg && lineGraph && inset;
+      return pts(
+        ok,
         16,
-        "has_elevation_bars",
-        chart && inset ? "Elevation bar chart" : "Need inset bar graph of elevation along the route"
+        "has_elevation_chart",
+        ok ? "Elevation line graph" : "Need inset line graph of elevation along the route (distance × height)"
+      );
+    },
+    route_elevation_pick(src) {
+      const click = /on\(\s*["']click["']|addEventListener\(\s*["']click["']/i.test(src);
+      const pick =
+        /queryRenderedFeatures|nearest|setPick|pickIdx|elevM|elevation pick|along the route/i.test(src);
+      return pts(
+        click && pick,
+        14,
+        "route_elevation_pick",
+        click && pick ? "Click-to-elevation" : "Clicking the route should highlight elevation on the inset chart"
       );
     },
     nyc_marathon_context(src) {
@@ -511,7 +534,9 @@
     has_pitch_or_bearing: "Pitch or bearing change",
     has_inset: "Inset / overview map",
     has_marathon_route: "Marathon course drawn as a line layer",
-    has_elevation_bars: "Inset bar graph of elevation along the route",
+    street_following_route: "Course follows real streets (OSRM / Directions / map matching)",
+    has_elevation_chart: "Inset line graph of elevation along the route",
+    route_elevation_pick: "Click route to show elevation on the inset chart",
     nyc_marathon_context: "NYC (or named) marathon framing",
     extent_rect: "Main extent shown on inset",
     has_extrusion: "3D buildings / fill-extrusion",
@@ -599,7 +624,9 @@
     has_pitch_or_bearing: "A tour that never tilts/rotates is a weak choreography.",
     has_inset: "Inset maps need a second map instance (overview), not a CSS thumbnail.",
     has_marathon_route: "Draw the full marathon course as a GeoJSON/line layer the camera can fit.",
-    has_elevation_bars: "Elevation profile belongs in an inset chart (canvas/SVG bars), not only as map labels.",
+    street_following_route: "Don’t hand-draw a shortcut polyline — snap to streets with routing/map matching.",
+    has_elevation_chart: "Elevation profile is a line graph (distance × height) in an inset, not bars-only or map labels.",
+    route_elevation_pick: "Users click the course and see that point’s elevation on the inset graph.",
     nyc_marathon_context: "Use the NYC Marathon (or clearly name another famous marathon) as the scenario.",
     extent_rect: "Overview must show where the main map is looking.",
     has_extrusion: "3D buildings need extrusion (or vendor 3D buildings), not just pitch.",

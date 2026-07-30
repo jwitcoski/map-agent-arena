@@ -13,75 +13,88 @@
     .panel {
       position: absolute; z-index: 2; top: 10px; left: 10px;
       background: rgba(10,16,32,.92); color: #eef2ff; padding: 10px 12px;
-      border-radius: 10px; max-width: min(320px, 92vw); font-size: 13px;
+      border-radius: 10px; max-width: min(340px, 92vw); font-size: 13px;
       border: 1px solid rgba(255,255,255,.12);
     }
     .panel strong { display: block; margin-bottom: 4px; font-size: 14px; }
-    .panel .stat { color: #9fb0c8; font-size: 12px; margin-top: 6px; }
+    .panel .stat { color: #9fb0c8; font-size: 12px; margin-top: 6px; line-height: 1.35; }
     #elevChart {
       position: absolute; z-index: 2; left: 10px; right: 10px; bottom: 28px;
-      height: 132px; max-width: min(520px, 94vw);
+      height: 148px; max-width: min(560px, 94vw);
       background: rgba(10,16,32,.94); color: #eef2ff;
       border: 1px solid rgba(255,255,255,.14); border-radius: 10px;
       padding: 8px 10px 6px; box-sizing: border-box;
     }
     #elevChart .chart-head {
-      display: flex; justify-content: space-between; align-items: baseline;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
       font-size: 11px; color: #9fb0c8; margin-bottom: 4px;
     }
     #elevChart .chart-head strong { color: #eef2ff; font-size: 12px; }
-    #elevCanvas { display: block; width: 100%; height: 96px; }
+    #pickLabel { color: #fbbf24; font-variant-numeric: tabular-nums; }
+    #elevCanvas { display: block; width: 100%; height: 108px; cursor: crosshair; }
   </style>
 </head>
 <body>
 
 <div class="panel">
   <strong>NYC Marathon</strong>
-  Simplified open-data course · MapLibre + OpenFreeMap
-  <div class="stat" id="stats">Loading route…</div>
+  Street-snapped via OSRM · MapLibre + OpenFreeMap
+  <div class="stat" id="stats">Routing along the course…</div>
 </div>
 <div id="map"></div>
 <div id="elevChart" class="elevation-profile inset">
   <div class="chart-head">
-    <strong>Elevation along route</strong>
+    <strong>Elevation · line graph</strong>
     <span id="elevRange">—</span>
+    <span id="pickLabel">Click the route</span>
   </div>
-  <canvas id="elevCanvas" width="640" height="120" aria-label="Bar graph of elevation along the NYC Marathon"></canvas>
+  <canvas id="elevCanvas" width="720" height="140" aria-label="Line graph of elevation along the NYC Marathon"></canvas>
 </div>
 
 <script>
-  // Simplified NYC Marathon spine (Verrazzano → Brooklyn → Queensboro → Manhattan → Bronx → Central Park finish).
-  // Elevations (m) are honest sampled profile shape for the famous hills — not a live DEM call.
-  const routeCoords = [
-    [-74.0555, 40.6038], // Staten Island approach / Verrazzano start
-    [-74.0448, 40.6065],
-    [-74.0390, 40.6150], // Verrazzano climb
-    [-74.0270, 40.6280],
-    [-74.0120, 40.6400], // into Brooklyn
-    [-73.9960, 40.6505],
-    [-73.9800, 40.6620],
-    [-73.9680, 40.6780],
-    [-73.9550, 40.6920],
-    [-73.9440, 40.7050], // toward Williamsburg
-    [-73.9480, 40.7200],
-    [-73.9545, 40.7450],
-    [-73.9540, 40.7575], // Queensboro Bridge
-    [-73.9580, 40.7680], // 1st Ave Manhattan
-    [-73.9605, 40.7800],
+  // Key course pins for the NYC Marathon (Verrazzano → Brooklyn → Queensboro → 1st Ave → Bronx → Central Park).
+  // OSRM snaps these to the actual street network.
+  const WAYPOINTS = [
+    [-74.0629, 40.6069], // Start · Fort Wadsworth / Verrazzano SI
+    [-74.0500, 40.6045],
+    [-74.0395, 40.6068], // Verrazzano mid
+    [-74.0315, 40.6145], // Brooklyn landing
+    [-74.0278, 40.6225],
+    [-74.0205, 40.6320], // 4th Ave Brooklyn
+    [-74.0115, 40.6415],
+    [-74.0010, 40.6505],
+    [-73.9905, 40.6600],
+    [-73.9800, 40.6695],
+    [-73.9690, 40.6785],
+    [-73.9585, 40.6890], // Bedford / Williamsburg approach
+    [-73.9570, 40.7005],
+    [-73.9605, 40.7120],
+    [-73.9625, 40.7240],
+    [-73.9595, 40.7360],
+    [-73.9555, 40.7485],
+    [-73.9540, 40.7570], // Queensboro Bridge
+    [-73.9575, 40.7635], // into Manhattan / 1st Ave
+    [-73.9595, 40.7720],
+    [-73.9615, 40.7820],
     [-73.9630, 40.7920],
-    [-73.9400, 40.8120], // into Bronx
-    [-73.9220, 40.8280],
-    [-73.9300, 40.8350],
-    [-73.9480, 40.8200], // back toward Manhattan
-    [-73.9580, 40.8000],
-    [-73.9650, 40.7820], // Central Park
-    [-73.9685, 40.7715]  // finish
+    [-73.9550, 40.8005],
+    [-73.9335, 40.8075], // Willis Ave → Bronx
+    [-73.9185, 40.8165],
+    [-73.9105, 40.8255],
+    [-73.9220, 40.8220],
+    [-73.9365, 40.8125], // Madison Ave Bridge back
+    [-73.9485, 40.8035],
+    [-73.9585, 40.7940], // 5th Ave / Park
+    [-73.9645, 40.7845],
+    [-73.9665, 40.7765],
+    [-73.9688, 40.7716]  // Finish · Central Park
   ];
-  const elevM = [
-    8, 18, 68, 42, 22, 18, 16, 20, 24, 28,
-    26, 30, 48, 22, 20, 24, 18, 22, 20, 26,
-    32, 38, 34
-  ];
+
+  const SAMPLE_N = 120;
+  let profile = []; // { lng, lat, distKm, elevM }
+  let pickIdx = -1;
+  let pickMarker = null;
+  let chartLayout = null;
 
   function haversineKm(a, b) {
     const R = 6371;
@@ -94,41 +107,106 @@
     return 2 * R * Math.asin(Math.sqrt(s));
   }
 
-  const distKm = [0];
-  for (let i = 1; i < routeCoords.length; i++) {
-    distKm[i] = distKm[i - 1] + haversineKm(routeCoords[i - 1], routeCoords[i]);
+  function densify(coords, targetN) {
+    if (!coords.length) return [];
+    const seg = [0];
+    for (let i = 1; i < coords.length; i++) {
+      seg[i] = seg[i - 1] + haversineKm(coords[i - 1], coords[i]);
+    }
+    const total = seg[seg.length - 1] || 1;
+    const out = [];
+    for (let i = 0; i < targetN; i++) {
+      const t = (i / (targetN - 1)) * total;
+      let j = 1;
+      while (j < seg.length && seg[j] < t) j++;
+      const a = coords[j - 1];
+      const b = coords[Math.min(j, coords.length - 1)];
+      const span = seg[Math.min(j, seg.length - 1)] - seg[j - 1] || 1;
+      const u = (t - seg[j - 1]) / span;
+      out.push({
+        lng: a[0] + (b[0] - a[0]) * u,
+        lat: a[1] + (b[1] - a[1]) * u,
+        distKm: t
+      });
+    }
+    return out;
   }
-  const totalKm = distKm[distKm.length - 1];
-  let gain = 0;
-  for (let i = 1; i < elevM.length; i++) {
-    const d = elevM[i] - elevM[i - 1];
-    if (d > 0) gain += d;
+
+  /** Honest NYC Marathon–shaped fallback if DEM is unavailable. */
+  function syntheticElev(distKm, totalKm) {
+    const x = distKm / Math.max(totalKm, 0.001);
+    let e = 12;
+    e += 55 * Math.exp(-Math.pow((x - 0.04) / 0.03, 2)); // Verrazzano
+    e += 8 * Math.sin(x * Math.PI * 6) * Math.sin(x * Math.PI);
+    e += 28 * Math.exp(-Math.pow((x - 0.48) / 0.035, 2)); // Queensboro
+    e += 18 * Math.exp(-Math.pow((x - 0.88) / 0.05, 2)); // Park hills
+    e += 10 * Math.exp(-Math.pow((x - 0.95) / 0.04, 2));
+    return Math.max(2, Math.round(e));
   }
-  const elevMin = Math.min(...elevM);
-  const elevMax = Math.max(...elevM);
 
-  document.getElementById("stats").textContent =
-    "~" + totalKm.toFixed(1) + " km sampled · +" + Math.round(gain) + " m gain · Verrazzano → Central Park";
-  document.getElementById("elevRange").textContent =
-    elevMin + "–" + elevMax + " m";
+  async function fetchElevations(samples) {
+    const batches = [];
+    for (let i = 0; i < samples.length; i += 90) {
+      batches.push(samples.slice(i, i + 90));
+    }
+    const elevs = new Array(samples.length).fill(null);
+    try {
+      for (let b = 0; b < batches.length; b++) {
+        const batch = batches[b];
+        const locs = batch.map((p) => p.lat.toFixed(5) + "," + p.lng.toFixed(5)).join("|");
+        const url = "https://api.opentopodata.org/v1/ned10m?locations=" + encodeURIComponent(locs);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("elev " + res.status);
+        const data = await res.json();
+        const results = data.results || [];
+        for (let i = 0; i < results.length; i++) {
+          const v = results[i] && results[i].elevation;
+          if (v != null && !Number.isNaN(v)) elevs[b * 90 + i] = v;
+        }
+      }
+    } catch (_) {
+      return null;
+    }
+    if (elevs.some((v) => v == null)) return null;
+    return elevs;
+  }
 
-  function drawElevationBars() {
+  function nearestProfileIndex(lngLat) {
+    let best = 0;
+    let bestD = Infinity;
+    for (let i = 0; i < profile.length; i++) {
+      const p = profile[i];
+      const d = haversineKm([p.lng, p.lat], [lngLat.lng, lngLat.lat]);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  function drawElevationLine() {
     const canvas = document.getElementById("elevCanvas");
     const ctx = canvas.getContext("2d");
     const w = canvas.width;
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
-    const padL = 28;
-    const padR = 8;
-    const padT = 8;
-    const padB = 18;
+    if (!profile.length) return;
+
+    const padL = 34;
+    const padR = 10;
+    const padT = 10;
+    const padB = 22;
     const plotW = w - padL - padR;
     const plotH = h - padT - padB;
-    const n = elevM.length;
-    const gap = 2;
-    const barW = Math.max(2, (plotW - gap * (n - 1)) / n);
+    const elevs = profile.map((p) => p.elevM);
+    const elevMin = Math.min(...elevs);
+    const elevMax = Math.max(...elevs);
     const y0 = elevMin - 4;
     const y1 = elevMax + 6;
+    const totalKm = profile[profile.length - 1].distKm || 1;
+
+    chartLayout = { padL, padR, padT, padB, plotW, plotH, y0, y1, totalKm, w, h };
 
     ctx.strokeStyle = "rgba(255,255,255,.12)";
     ctx.beginPath();
@@ -142,22 +220,87 @@
     ctx.fillText(Math.round(y1) + " m", 2, padT + 8);
     ctx.fillText(Math.round(y0) + " m", 2, h - padB);
 
-    for (let i = 0; i < n; i++) {
-      const t = (elevM[i] - y0) / (y1 - y0);
-      const bh = Math.max(1, t * plotH);
-      const x = padL + i * (barW + gap);
-      const y = padT + plotH - bh;
-      const hot = elevM[i] > 40;
-      ctx.fillStyle = hot ? "#f59e0b" : "#38bdf8";
-      ctx.fillRect(x, y, barW, bh);
+    // Area under line
+    ctx.beginPath();
+    for (let i = 0; i < profile.length; i++) {
+      const x = padL + (profile[i].distKm / totalKm) * plotW;
+      const y = padT + plotH - ((profile[i].elevM - y0) / (y1 - y0)) * plotH;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
+    ctx.lineTo(padL + plotW, h - padB);
+    ctx.lineTo(padL, h - padB);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(56, 189, 248, 0.18)";
+    ctx.fill();
+
+    // Elevation line graph
+    ctx.beginPath();
+    for (let i = 0; i < profile.length; i++) {
+      const x = padL + (profile[i].distKm / totalKm) * plotW;
+      const y = padT + plotH - ((profile[i].elevM - y0) / (y1 - y0)) * plotH;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     ctx.fillStyle = "#9fb0c8";
-    ctx.fillText("Start", padL, h - 4);
-    ctx.fillText("Finish · Central Park", w - padR - 110, h - 4);
+    ctx.fillText("Start", padL, h - 5);
+    ctx.fillText("Finish · Central Park", w - padR - 118, h - 5);
+
+    if (pickIdx >= 0 && profile[pickIdx]) {
+      const p = profile[pickIdx];
+      const x = padL + (p.distKm / totalKm) * plotW;
+      const y = padT + plotH - ((p.elevM - y0) / (y1 - y0)) * plotH;
+      ctx.strokeStyle = "#fbbf24";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, padT);
+      ctx.lineTo(x, h - padB);
+      ctx.stroke();
+      ctx.fillStyle = "#fbbf24";
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
-  drawElevationBars();
+  function setPick(idx) {
+    if (!profile.length) return;
+    pickIdx = Math.max(0, Math.min(profile.length - 1, idx));
+    const p = profile[pickIdx];
+    document.getElementById("pickLabel").textContent =
+      p.distKm.toFixed(2) + " km · " + Math.round(p.elevM) + " m";
+    if (pickMarker) pickMarker.setLngLat([p.lng, p.lat]);
+    else {
+      pickMarker = new maplibregl.Marker({ color: "#fbbf24" })
+        .setLngLat([p.lng, p.lat])
+        .setPopup(new maplibregl.Popup({ offset: 12 }).setText("Elevation pick"))
+        .addTo(map);
+    }
+    drawElevationLine();
+  }
+
+  function pickFromChartClick(ev) {
+    if (!chartLayout || !profile.length) return;
+    const canvas = document.getElementById("elevCanvas");
+    const rect = canvas.getBoundingClientRect();
+    const sx = ((ev.clientX - rect.left) / rect.width) * canvas.width;
+    const { padL, plotW, totalKm } = chartLayout;
+    const dist = Math.max(0, Math.min(totalKm, ((sx - padL) / plotW) * totalKm));
+    let best = 0;
+    let bestD = Infinity;
+    for (let i = 0; i < profile.length; i++) {
+      const d = Math.abs(profile[i].distKm - dist);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    }
+    setPick(best);
+  }
 
   const map = new maplibregl.Map({
     container: "map",
@@ -166,40 +309,112 @@
     zoom: 10
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
+    const stats = document.getElementById("stats");
+    const osrmUrl =
+      "https://router.project-osrm.org/route/v1/driving/" +
+      WAYPOINTS.map((c) => c[0] + "," + c[1]).join(";") +
+      "?overview=full&geometries=geojson&continue_straight=false";
+
+    let coords = WAYPOINTS.map((c) => c.slice());
+    try {
+      const data = await (await fetch(osrmUrl)).json();
+      const route = data.routes && data.routes[0];
+      if (route && route.geometry && route.geometry.coordinates && route.geometry.coordinates.length > 10) {
+        coords = route.geometry.coordinates;
+        stats.textContent = "OSRM street geometry loaded · sampling elevation…";
+      } else {
+        stats.textContent = "OSRM sparse — using waypoint spine; elevation next…";
+      }
+    } catch (_) {
+      stats.textContent = "OSRM unavailable — waypoint spine fallback; elevation next…";
+    }
+
+    const samples = densify(coords, SAMPLE_N);
+    const elevs = await fetchElevations(samples);
+    const totalKm = samples[samples.length - 1].distKm || 1;
+    let elevSource = "OpenTopoData NED";
+    profile = samples.map((s, i) => ({
+      lng: s.lng,
+      lat: s.lat,
+      distKm: s.distKm,
+      elevM: elevs ? elevs[i] : syntheticElev(s.distKm, totalKm)
+    }));
+    if (!elevs) elevSource = "sampled profile (DEM fallback)";
+
+    let gain = 0;
+    for (let i = 1; i < profile.length; i++) {
+      const d = profile[i].elevM - profile[i - 1].elevM;
+      if (d > 0) gain += d;
+    }
+    const elevMin = Math.min(...profile.map((p) => p.elevM));
+    const elevMax = Math.max(...profile.map((p) => p.elevM));
+    document.getElementById("elevRange").textContent =
+      Math.round(elevMin) + "–" + Math.round(elevMax) + " m";
+    stats.textContent =
+      totalKm.toFixed(1) + " km on-street · +" + Math.round(gain) + " m gain · " + elevSource +
+      " · click the red course (or the chart)";
+
     map.addSource("marathon-route", {
       type: "geojson",
       data: {
         type: "Feature",
         properties: { name: "NYC Marathon" },
-        geometry: { type: "LineString", coordinates: routeCoords }
+        geometry: { type: "LineString", coordinates: coords }
       }
     });
     map.addLayer({
       id: "marathon-route",
       type: "line",
       source: "marathon-route",
-      paint: {
-        "line-color": "#ef4444",
-        "line-width": 4,
-        "line-opacity": 0.9
-      }
+      paint: { "line-color": "#ef4444", "line-width": 4, "line-opacity": 0.92 }
+    });
+    // Wider invisible hit target for easier route clicks
+    map.addLayer({
+      id: "marathon-route-hit",
+      type: "line",
+      source: "marathon-route",
+      paint: { "line-color": "#ef4444", "line-width": 18, "line-opacity": 0 }
     });
 
     new maplibregl.Marker({ color: "#22c55e" })
-      .setLngLat(routeCoords[0])
+      .setLngLat(coords[0])
       .setPopup(new maplibregl.Popup().setText("Start · Verrazzano / Staten Island"))
       .addTo(map);
     new maplibregl.Marker({ color: "#ef4444" })
-      .setLngLat(routeCoords[routeCoords.length - 1])
+      .setLngLat(coords[coords.length - 1])
       .setPopup(new maplibregl.Popup().setText("Finish · Central Park"))
       .addTo(map);
 
-    const bounds = routeCoords.reduce(
+    const bounds = coords.reduce(
       (b, c) => b.extend(c),
-      new maplibregl.LngLatBounds(routeCoords[0], routeCoords[0])
+      new maplibregl.LngLatBounds(coords[0], coords[0])
     );
-    map.fitBounds(bounds, { padding: { top: 72, bottom: 160, left: 40, right: 40 }, duration: 900 });
+    map.fitBounds(bounds, { padding: { top: 72, bottom: 175, left: 40, right: 40 }, duration: 1000 });
+
+    drawElevationLine();
+
+    map.on("click", "marathon-route-hit", (e) => {
+      setPick(nearestProfileIndex(e.lngLat));
+    });
+    map.on("mouseenter", "marathon-route-hit", () => {
+      map.getCanvas().style.cursor = "pointer";
+    });
+    map.on("mouseleave", "marathon-route-hit", () => {
+      map.getCanvas().style.cursor = "";
+    });
+    // Also allow nearby map clicks to snap to the course
+    map.on("click", (e) => {
+      const hits = map.queryRenderedFeatures(e.point, { layers: ["marathon-route-hit"] });
+      if (hits.length) return;
+      const idx = nearestProfileIndex(e.lngLat);
+      const p = profile[idx];
+      if (p && haversineKm([p.lng, p.lat], [e.lngLat.lng, e.lngLat.lat]) < 0.35) {
+        setPick(idx);
+      }
+    });
+
+    document.getElementById("elevCanvas").addEventListener("click", pickFromChartClick);
   });
 
   window.__MAP__ = map;
