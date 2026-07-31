@@ -3,110 +3,368 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Map Agent Arena</title>
+  <title>Map Agent Arena — a geographer’s lab for the agent era</title>
+  <meta name="description" content="Portfolio lab by a geographer: grade and compare map-agent skill packs across platforms so spatial work stays accountable." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #081018;
-      --ink: #eaf2f7;
-      --muted: #8aa0b4;
-      --line: rgba(180, 210, 230, 0.12);
-      --accent: #3ecfbf;
-      --pad: clamp(18px, 4vw, 40px);
+      --paper: #dfe8e4;
+      --paper-deep: #c9d6d0;
+      --ink: #14221c;
+      --muted: #4a5c54;
+      --line: #8aa094;
+      --field: #1f6b4a;
+      --field-ink: #0f3d2a;
+      --chalk: #f4f7f5;
+      --pad: clamp(20px, 5vw, 56px);
     }
+
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
       margin: 0;
-      font-family: Outfit, system-ui, sans-serif;
+      font-family: "Source Sans 3", sans-serif;
       color: var(--ink);
+      background: var(--paper);
       min-height: 100vh;
+    }
+
+    /* Contour map as full-bleed visual plane */
+    .terrain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
       background:
-        radial-gradient(800px 420px at 90% -10%, rgba(62, 207, 191, 0.14), transparent 55%),
-        linear-gradient(180deg, #0b1520, var(--bg));
+        linear-gradient(165deg, rgba(244, 247, 245, 0.55) 0%, transparent 42%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+      overflow: hidden;
     }
-    main { max-width: 920px; padding: calc(var(--pad) + 12px) var(--pad) 48px; }
-    .kicker {
-      margin: 0 0 10px;
-      font-size: 0.72rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
+
+    .terrain svg {
+      position: absolute;
+      inset: -8% -5% auto -5%;
+      width: 110%;
+      height: min(92vh, 920px);
+      opacity: 0.55;
     }
-    h1 {
+
+    .terrain path {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.1;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+      opacity: 0;
+      stroke-dasharray: 1400;
+      stroke-dashoffset: 1400;
+      animation: draw-contour 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    .terrain path:nth-child(1) { animation-delay: 0.05s; }
+    .terrain path:nth-child(2) { animation-delay: 0.22s; }
+    .terrain path:nth-child(3) { animation-delay: 0.38s; }
+    .terrain path:nth-child(4) { animation-delay: 0.52s; }
+    .terrain path:nth-child(5) { animation-delay: 0.66s; }
+    .terrain path:nth-child(6) { animation-delay: 0.8s; }
+    .terrain path:nth-child(7) { animation-delay: 0.94s; }
+
+    @keyframes draw-contour {
+      to {
+        opacity: 0.85;
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero: one composition */
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: var(--pad);
+      padding-bottom: clamp(28px, 6vh, 64px);
+      max-width: 1100px;
+    }
+
+    .brand {
       margin: 0;
-      font-family: Sora, sans-serif;
-      font-size: clamp(2rem, 5vw, 3rem);
-      letter-spacing: -0.04em;
-      line-height: 1.05;
+      font-family: Syne, sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.75rem, 9vw, 5.75rem);
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      color: var(--ink);
+      max-width: 11ch;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
     }
-    .lede {
-      margin: 14px 0 28px;
+
+    .headline {
+      margin: clamp(18px, 3vh, 28px) 0 0;
+      font-family: Syne, sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.2rem, 2.6vw, 1.65rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
+    }
+
+    .support {
+      margin: 12px 0 0;
+      font-size: clamp(1.02rem, 2vw, 1.15rem);
+      line-height: 1.45;
       color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.5;
-      max-width: 38rem;
+      max-width: 34rem;
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
     }
-    .grid { display: grid; gap: 14px; }
-    @media (min-width: 720px) { .grid { grid-template-columns: 1fr 1fr; } }
-    a.card {
-      display: block;
+
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-top: clamp(22px, 4vh, 36px);
+      align-items: center;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: rise 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.88s forwards;
+    }
+
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45em;
+      padding: 0.85em 1.25em;
+      background: var(--field);
+      color: var(--chalk);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.98rem;
+      border-radius: 4px;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .cta-primary:hover {
+      background: var(--field-ink);
+      transform: translateY(-1px);
+    }
+
+    .cta-secondary {
+      color: var(--ink);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.98rem;
+      border-bottom: 2px solid var(--field);
+      padding-bottom: 2px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .cta-secondary:hover {
+      color: var(--field-ink);
+      border-color: var(--field-ink);
+    }
+
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Work section — interactive destinations, not hero chrome */
+    .work {
+      padding: clamp(48px, 10vh, 96px) var(--pad) 32px;
+      max-width: 1100px;
+      background: color-mix(in srgb, var(--chalk) 72%, transparent);
+      border-top: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
+      backdrop-filter: blur(6px);
+    }
+
+    .work-head {
+      margin: 0 0 8px;
+      font-family: Syne, sans-serif;
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      letter-spacing: -0.03em;
+    }
+
+    .work-lede {
+      margin: 0 0 28px;
+      color: var(--muted);
+      max-width: 36rem;
+      line-height: 1.5;
+    }
+
+    .entries {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
+    }
+
+    .entries li {
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 50%, transparent);
+    }
+
+    .entry {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 24px;
+      align-items: baseline;
+      padding: 22px 0;
       text-decoration: none;
       color: inherit;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 18px 18px 16px;
-      background: rgba(12, 22, 32, 0.7);
-      transition: border-color .2s, transform .2s;
+      transition: color 0.2s ease;
     }
-    a.card:hover { border-color: var(--accent); transform: translateY(-2px); }
-    a.card.span { grid-column: 1 / -1; }
-    .card h2 {
-      margin: 0 0 6px;
-      font-family: Sora, sans-serif;
-      font-size: 1.15rem;
+
+    .entry:hover { color: var(--field-ink); }
+    .entry:hover .entry-go { transform: translateX(4px); }
+
+    .entry h2 {
+      margin: 0;
+      font-family: Syne, sans-serif;
+      font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+      letter-spacing: -0.02em;
+      font-weight: 700;
     }
-    .card p { margin: 0; color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
-    .card .go { display: inline-block; margin-top: 12px; color: var(--accent); font-weight: 600; font-size: 0.85rem; }
-    footer {
-      margin-top: 36px;
+
+    .entry p {
+      margin: 4px 0 0;
+      grid-column: 1;
       color: var(--muted);
-      font-size: 0.82rem;
+      font-size: 0.98rem;
+      line-height: 1.45;
+      max-width: 40rem;
     }
-    footer a { color: var(--accent); }
+
+    .entry:hover p { color: color-mix(in srgb, var(--muted) 80%, var(--field)); }
+
+    .entry-go {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--field);
+      transition: transform 0.2s ease;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 560px) {
+      .entry {
+        grid-template-columns: 1fr;
+      }
+      .entry-go { margin-top: 6px; }
+    }
+
+    footer {
+      padding: 24px var(--pad) 40px;
+      max-width: 1100px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    footer a {
+      color: var(--field-ink);
+      font-weight: 600;
+    }
+
+    footer code {
+      font-size: 0.84em;
+      background: color-mix(in srgb, var(--chalk) 80%, var(--paper-deep));
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .terrain path,
+      .brand,
+      .headline,
+      .support,
+      .cta {
+        animation: none;
+        opacity: 1;
+        transform: none;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <p class="kicker">Open map-agent eval lab</p>
-    <h1>Map Agent Arena</h1>
-    <p class="lede">
-      Cross-vendor Royal Rumble plus Mapbox and MapTiler skill graders.
-      Built to compare agent skill packs  -  not hosted on a personal homepage.
-    </p>
-    <div class="grid">
-      <a class="card span" href="./map-agent-rumble/?v=20260729b">
-        <h2>Map Agent Royal Rumble</h2>
-        <p>Top-10 mapping platforms, shared skills, static rubrics, Cursor/Composer run attribution.</p>
-        <span class="go">Enter rumble -></span>
-      </a>
-      <a class="card" href="./mapbox-playground/agent-grader.html">
-        <h2>Mapbox Agent Grader</h2>
-        <p>Core + Extreme skill scoreboard for Mapbox GL JS agent packs.</p>
-        <span class="go">Open grader -></span>
-      </a>
-      <a class="card" href="./maptiler-playground/agent-grader.html">
-        <h2>MapTiler Agent Grader</h2>
-        <p>Automated checks against maptiler-skills for MapTiler SDK packs.</p>
-        <span class="go">Open grader -></span>
-      </a>
-    </div>
+  <div class="terrain" aria-hidden="true">
+    <svg viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice">
+      <path d="M-20,520 C80,480 160,560 260,500 S420,420 520,460 680,540 780,480 940,400 1100,440 1220,500 1240,520" />
+      <path d="M-20,450 C100,410 180,490 290,430 S450,350 560,390 720,470 830,410 980,330 1120,370 1240,430" />
+      <path d="M-20,380 C90,340 200,420 310,360 S480,280 600,320 760,400 880,340 1020,260 1160,300 1240,350" />
+      <path d="M-20,310 C120,280 220,350 340,300 S520,220 640,260 800,330 920,270 1060,200 1240,250" />
+      <path d="M40,240 C160,210 260,280 380,230 S560,150 680,190 840,260 960,200 1100,140 1200,170" />
+      <path d="M120,180 C240,150 340,210 460,170 S640,100 760,130 900,190 1020,150 1140,100 1220,120" />
+      <path d="M220,120 C340,95 430,150 550,115 S720,60 840,90 980,140 1100,110 1200,80" />
+    </svg>
+  </div>
+
+  <div class="page">
+    <header class="hero">
+      <h1 class="brand">Map Agent Arena</h1>
+      <p class="headline">How a geographer works in the agent era.</p>
+      <p class="support">
+        I grade map-agent skill packs the way I grade maps — shared tasks, clear rubrics, comparable outcomes across platforms.
+      </p>
+      <div class="cta">
+        <a class="cta-primary" href="./map-agent-rumble/?v=20260729b">Enter the rumble</a>
+        <a class="cta-secondary" href="#work">See the graders</a>
+      </div>
+    </header>
+
+    <section class="work" id="work" aria-labelledby="work-title">
+      <h2 class="work-head" id="work-title">The work</h2>
+      <p class="work-lede">
+        Same spatial skills. Different vendors. Evidence you can read before you trust an agent with place.
+      </p>
+      <ul class="entries">
+        <li>
+          <a class="entry" href="./map-agent-rumble/?v=20260729b">
+            <h2>Royal Rumble</h2>
+            <span class="entry-go">Open →</span>
+            <p>Top mapping platforms on shared skills and static rubrics — capability, cost, code, and outcome side by side.</p>
+          </a>
+        </li>
+        <li>
+          <a class="entry" href="./mapbox-playground/agent-grader.html">
+            <h2>Mapbox Agent Grader</h2>
+            <span class="entry-go">Open →</span>
+            <p>Core and extreme Mapbox GL JS skill checks against the Mapbox agent pack.</p>
+          </a>
+        </li>
+        <li>
+          <a class="entry" href="./maptiler-playground/agent-grader.html">
+            <h2>MapTiler Agent Grader</h2>
+            <span class="entry-go">Open →</span>
+            <p>Automated checks against maptiler-skills for MapTiler SDK packs.</p>
+          </a>
+        </li>
+      </ul>
+    </section>
+
     <footer>
-      Keys: copy <code>admin-boundaries/js/config.example.js</code> -> <code>config.js</code>.
-      Source: <a href="https://github.com/jwitcoski/map-agent-arena">github.com/jwitcoski/map-agent-arena</a>
+      Local keys: copy <code>admin-boundaries/js/config.example.js</code> → <code>config.js</code>.
+      Source:
+      <a href="https://github.com/jwitcoski/map-agent-arena">github.com/jwitcoski/map-agent-arena</a>
     </footer>
-  </main>
+  </div>
 </body>
 </html>
